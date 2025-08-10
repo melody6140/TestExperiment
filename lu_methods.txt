@@ -1,0 +1,2179 @@
+PDF has 10 pages
+--- ABSTRACT ---
+Abstract —The fast spread of hate speech on social media
+impacts the Internet environment and our society by increasing
+prejudice and hurting people. Detecting hate speech has aroused
+broad attention in the field of natural language processing.
+Although hate speech detection has been addressed in recent
+work, this task still faces two inherent unsolved challenges.
+The first challenge lies in the complex semantic information
+conveyed in hate speech, particularly the interference of insulting
+words in hate speech detection. The second challenge is the
+imbalanced distribution of hate speech and non-hate speech,
+which may significantly deteriorate the performance of models.
+To tackle these challenges, we propose a novel dual contrastive
+learning (DCL) framework for hate speech detection. Our frame-
+work jointly optimizes the self-supervised and the supervised
+contrastive learning loss for capturing span-level information
+beyond the token-level emotional semantics used in existing
+models, p
+
+--- Context around line 2 ---
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 1
+Hate Speech Detection via Dual Contrastive
+Learning
+Junyu Lu, Hongfei Lin, Xiaokun Zhang, Zhaoqing Li, Tongyue Zhang, Linlin Zong, Fenglong Ma, and Bo Xu*
+Abstract —The fast spread of hate speech on social media
+impacts the Internet environment and our society by increasing
+
+--- Context around line 3 ---
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 1
+Hate Speech Detection via Dual Contrastive
+Learning
+Junyu Lu, Hongfei Lin, Xiaokun Zhang, Zhaoqing Li, Tongyue Zhang, Linlin Zong, Fenglong Ma, and Bo Xu*
+Abstract —The fast spread of hate speech on social media
+impacts the Internet environment and our society by increasing
+prejudice and hurting people. Detecting hate speech has aroused
+
+--- Context around line 15 ---
+words in hate speech detection. The second challenge is the
+imbalanced distribution of hate speech and non-hate speech,
+which may significantly deteriorate the performance of models.
+To tackle these challenges, we propose a novel dual contrastive
+learning (DCL) framework for hate speech detection. Our frame-
+work jointly optimizes the self-supervised and the supervised
+contrastive learning loss for capturing span-level information
+
+--- Context around line 16 ---
+imbalanced distribution of hate speech and non-hate speech,
+which may significantly deteriorate the performance of models.
+To tackle these challenges, we propose a novel dual contrastive
+learning (DCL) framework for hate speech detection. Our frame-
+work jointly optimizes the self-supervised and the supervised
+contrastive learning loss for capturing span-level information
+beyond the token-level emotional semantics used in existing
+
+--- Context around line 17 ---
+which may significantly deteriorate the performance of models.
+To tackle these challenges, we propose a novel dual contrastive
+learning (DCL) framework for hate speech detection. Our frame-
+work jointly optimizes the self-supervised and the supervised
+contrastive learning loss for capturing span-level information
+beyond the token-level emotional semantics used in existing
+models, particularly detecting speech containing abusive and
+
+--- Context around line 19 ---
+learning (DCL) framework for hate speech detection. Our frame-
+work jointly optimizes the self-supervised and the supervised
+contrastive learning loss for capturing span-level information
+beyond the token-level emotional semantics used in existing
+models, particularly detecting speech containing abusive and
+insulting words. Moreover, we integrate the focal loss into the
+dual contrastive learning framework to alleviate the problem
+
+--- Context around line 21 ---
+contrastive learning loss for capturing span-level information
+beyond the token-level emotional semantics used in existing
+models, particularly detecting speech containing abusive and
+insulting words. Moreover, we integrate the focal loss into the
+dual contrastive learning framework to alleviate the problem
+of data imbalance. We conduct experiments on two publicly
+available English datasets, and experimental results show that
+
+--- Context around line 23 ---
+models, particularly detecting speech containing abusive and
+insulting words. Moreover, we integrate the focal loss into the
+dual contrastive learning framework to alleviate the problem
+of data imbalance. We conduct experiments on two publicly
+available English datasets, and experimental results show that
+the proposed model outperforms the state-of-the-art models and
+precisely detects hate speeches.
+
+--- Context around line 26 ---
+of data imbalance. We conduct experiments on two publicly
+available English datasets, and experimental results show that
+the proposed model outperforms the state-of-the-art models and
+precisely detects hate speeches.
+Index Terms —Natural language processing, hate speech de-
+tection, contrastive learning, emotion analysis, data imbalance.
+I. I NTRODUCTION
+
+--- Context around line 29 ---
+precisely detects hate speeches.
+Index Terms —Natural language processing, hate speech de-
+tection, contrastive learning, emotion analysis, data imbalance.
+I. I NTRODUCTION
+THE widespread use of social media provides people with
+a broader space for communication and information ex-
+change. People can freely express themselves on social media.
+
+--- Context around line 64 ---
+The state-of-the-art work has incorporated sentiment infor-
+mation for hate speech detection. Zhou et al. [29] proposed
+the sentiment knowledge sharing (SKS) model integrated with
+an insulting word list and multi-task learning to detect hate
+speech. Although achieving promising performance in this
+task, the SKS model holds a strong assumption that insulting
+and negative emotions can distinguish between hate speech
+
+--- Context around line 65 ---
+mation for hate speech detection. Zhou et al. [29] proposed
+the sentiment knowledge sharing (SKS) model integrated with
+an insulting word list and multi-task learning to detect hate
+speech. Although achieving promising performance in this
+task, the SKS model holds a strong assumption that insulting
+and negative emotions can distinguish between hate speech
+and non-hate speech . However, this assumption cannot be
+
+--- Context around line 67 ---
+an insulting word list and multi-task learning to detect hate
+speech. Although achieving promising performance in this
+task, the SKS model holds a strong assumption that insulting
+and negative emotions can distinguish between hate speech
+and non-hate speech . However, this assumption cannot be
+always true as both hate and non-hate speeches may contain
+large amounts of negative words. Therefore, the SKS model
+
+--- Context around line 71 ---
+and non-hate speech . However, this assumption cannot be
+always true as both hate and non-hate speeches may contain
+large amounts of negative words. Therefore, the SKS model
+with an insulting word list of hate speech achieved limited
+performance by overly focusing on the token-level emotional
+semantics. To further explain this phenomenon, we provide
+two example sentences from the SemEval-2019 Task-5 dataset
+
+--- Context around line 92 ---
+expression patterns beyond negative emotions.
+To precisely detect hate speech, compared with the lexical
+sentiment, the trained models should focus on contextual
+semantic information to avoid the misclassification of non-
+hate speech containing abusive and insulting words. For a
+sentence with abusive or insulting words, the sentence does
+not contain hate speech if it is not targeted at certain social
+
+--- Context around line 118 ---
+suffer from the problem of data imbalance . The imbalanced
+distribution of hate speech and non-hate speech would easily
+cause the detection model to pay too much attention to the
+class of non-hate speech with more samples, and ignore the
+class of hate speech with fewer samples, resulting in an
+imbalanced performance on data classification. Most existing
+methods are designed to optimize the overall performance,
+
+--- Context around line 122 ---
+class of hate speech with fewer samples, resulting in an
+imbalanced performance on data classification. Most existing
+methods are designed to optimize the overall performance,
+partly ignoring the data imbalance problem for hate speech
+detection.
+To solve the above-mentioned problems, we propose a novel
+dual contrastive learning (DCL) framework for hate speech
+
+--- Context around line 126 ---
+detection.
+To solve the above-mentioned problems, we propose a novel
+dual contrastive learning (DCL) framework for hate speech
+detection, which is tailored for the hate speech detection
+task by comprehensively considering the task-specific features,
+such as the subjectivity and contextualization of hate speech
+[46]. Specifically, our model integrates both self-supervised
+
+--- Context around line 130 ---
+task by comprehensively considering the task-specific features,
+such as the subjectivity and contextualization of hate speech
+[46]. Specifically, our model integrates both self-supervised
+and supervised contrastive learning, enriching the semantic
+representations of hate speech with context information itself
+and supervised signals from labels, effectively mitigating the
+misclassification of non-hate speech containing abusive and
+
+--- Context around line 131 ---
+such as the subjectivity and contextualization of hate speech
+[46]. Specifically, our model integrates both self-supervised
+and supervised contrastive learning, enriching the semantic
+representations of hate speech with context information itself
+and supervised signals from labels, effectively mitigating the
+misclassification of non-hate speech containing abusive and
+insulting words. Furthermore, since self-supervised contrastive
+
+--- Context around line 135 ---
+and supervised signals from labels, effectively mitigating the
+misclassification of non-hate speech containing abusive and
+insulting words. Furthermore, since self-supervised contrastive
+learning has stronger adaptability than supervised contrastive
+learning from labels [13], the representations learned from
+self-supervised contrastive learning can be considered as prior
+knowledge, facilitating the supervised classifications of hate
+
+--- Context around line 136 ---
+misclassification of non-hate speech containing abusive and
+insulting words. Furthermore, since self-supervised contrastive
+learning has stronger adaptability than supervised contrastive
+learning from labels [13], the representations learned from
+self-supervised contrastive learning can be considered as prior
+knowledge, facilitating the supervised classifications of hate
+speech by our DCL model. Therefore, we design the self-
+
+--- Context around line 137 ---
+insulting words. Furthermore, since self-supervised contrastive
+learning has stronger adaptability than supervised contrastive
+learning from labels [13], the representations learned from
+self-supervised contrastive learning can be considered as prior
+knowledge, facilitating the supervised classifications of hate
+speech by our DCL model. Therefore, we design the self-
+supervised contrastive learning before the supervised con-
+
+--- Context around line 138 ---
+learning has stronger adaptability than supervised contrastive
+learning from labels [13], the representations learned from
+self-supervised contrastive learning can be considered as prior
+knowledge, facilitating the supervised classifications of hate
+speech by our DCL model. Therefore, we design the self-
+supervised contrastive learning before the supervised con-
+trastive learning in DCL. In addition, we introduce the focal
+
+--- Context around line 140 ---
+self-supervised contrastive learning can be considered as prior
+knowledge, facilitating the supervised classifications of hate
+speech by our DCL model. Therefore, we design the self-
+supervised contrastive learning before the supervised con-
+trastive learning in DCL. In addition, we introduce the focal
+loss, a reshaped cross entropy loss, to alleviate the problem
+of data imbalance. The main contributions of this work are
+
+--- Context around line 141 ---
+knowledge, facilitating the supervised classifications of hate
+speech by our DCL model. Therefore, we design the self-
+supervised contrastive learning before the supervised con-
+trastive learning in DCL. In addition, we introduce the focal
+loss, a reshaped cross entropy loss, to alleviate the problem
+of data imbalance. The main contributions of this work are
+summarized as follows.
+
+--- Context around line 142 ---
+speech by our DCL model. Therefore, we design the self-
+supervised contrastive learning before the supervised con-
+trastive learning in DCL. In addition, we introduce the focal
+loss, a reshaped cross entropy loss, to alleviate the problem
+of data imbalance. The main contributions of this work are
+summarized as follows.
+•We propose a dual contrastive learning framework for
+
+--- Context around line 146 ---
+of data imbalance. The main contributions of this work are
+summarized as follows.
+•We propose a dual contrastive learning framework for
+hate speech detection, particularly addressing the de-
+tection of hate speech containing insulting words by
+mining context information of data beyond the token-
+level emotional semantics.
+
+--- Context around line 151 ---
+mining context information of data beyond the token-
+level emotional semantics.
+•We integrate self-supervised and supervised contrastive
+learning into the focal loss to tackle the problem of data
+imbalance in hate speech detection.
+•We examine the effectiveness of our model on two pub-
+licly used hate speech detection datasets, and demonstrate
+
+--- Context around line 152 ---
+level emotional semantics.
+•We integrate self-supervised and supervised contrastive
+learning into the focal loss to tackle the problem of data
+imbalance in hate speech detection.
+•We examine the effectiveness of our model on two pub-
+licly used hate speech detection datasets, and demonstrate
+that our model can achieve state-of-the-art performance
+
+--- Context around line 154 ---
+learning into the focal loss to tackle the problem of data
+imbalance in hate speech detection.
+•We examine the effectiveness of our model on two pub-
+licly used hate speech detection datasets, and demonstrate
+that our model can achieve state-of-the-art performance
+compared with the baseline models.II. R ELATED WORK
+We discuss two categories of related work: hate speech
+
+--- Context around line 156 ---
+•We examine the effectiveness of our model on two pub-
+licly used hate speech detection datasets, and demonstrate
+that our model can achieve state-of-the-art performance
+compared with the baseline models.II. R ELATED WORK
+We discuss two categories of related work: hate speech
+detection methods and contrastive learning methods.
+A. Hate Speech Detection Methods
+
+--- Context around line 157 ---
+licly used hate speech detection datasets, and demonstrate
+that our model can achieve state-of-the-art performance
+compared with the baseline models.II. R ELATED WORK
+We discuss two categories of related work: hate speech
+detection methods and contrastive learning methods.
+A. Hate Speech Detection Methods
+Detecting hate speech is a challenging natural language
+
+--- Context around line 159 ---
+compared with the baseline models.II. R ELATED WORK
+We discuss two categories of related work: hate speech
+detection methods and contrastive learning methods.
+A. Hate Speech Detection Methods
+Detecting hate speech is a challenging natural language
+processing (NLP) task. Early work has used machine learning
+methods in automatically detecting hate speech. Davidson
+
+--- Context around line 160 ---
+We discuss two categories of related work: hate speech
+detection methods and contrastive learning methods.
+A. Hate Speech Detection Methods
+Detecting hate speech is a challenging natural language
+processing (NLP) task. Early work has used machine learning
+methods in automatically detecting hate speech. Davidson
+et al. [24] presented a large-scale dataset and used Logistic
+
+--- Context around line 162 ---
+A. Hate Speech Detection Methods
+Detecting hate speech is a challenging natural language
+processing (NLP) task. Early work has used machine learning
+methods in automatically detecting hate speech. Davidson
+et al. [24] presented a large-scale dataset and used Logistic
+Regression [6] and SVM [7] with effective n-gram features for
+hate speech detection. These machine learning based methods
+
+--- Context around line 163 ---
+Detecting hate speech is a challenging natural language
+processing (NLP) task. Early work has used machine learning
+methods in automatically detecting hate speech. Davidson
+et al. [24] presented a large-scale dataset and used Logistic
+Regression [6] and SVM [7] with effective n-gram features for
+hate speech detection. These machine learning based methods
+can obtain the token-level features but mostly ignore the con-
+
+--- Context around line 166 ---
+et al. [24] presented a large-scale dataset and used Logistic
+Regression [6] and SVM [7] with effective n-gram features for
+hate speech detection. These machine learning based methods
+can obtain the token-level features but mostly ignore the con-
+textual semantic information that is highly needed for precise
+detection of hate speech, leading to limited performance.
+In recent years, with the development of deep learning
+
+--- Context around line 170 ---
+textual semantic information that is highly needed for precise
+detection of hate speech, leading to limited performance.
+In recent years, with the development of deep learning
+and large-scale pre-training language models, many advanced
+models were proposed and achieved outstanding performance
+in hate speech detection. Several researchers use word em-
+beddings obtained from unsupervised training on a large
+
+--- Context around line 171 ---
+detection of hate speech, leading to limited performance.
+In recent years, with the development of deep learning
+and large-scale pre-training language models, many advanced
+models were proposed and achieved outstanding performance
+in hate speech detection. Several researchers use word em-
+beddings obtained from unsupervised training on a large
+number of corpora to detect hate speech. Ding et al. [27]
+
+--- Context around line 172 ---
+In recent years, with the development of deep learning
+and large-scale pre-training language models, many advanced
+models were proposed and achieved outstanding performance
+in hate speech detection. Several researchers use word em-
+beddings obtained from unsupervised training on a large
+number of corpora to detect hate speech. Ding et al. [27]
+used the FastText [9] tools to acquire word representations
+
+--- Context around line 181 ---
+and BERT [22] for exploiting word-level semantic information
+and sub-word knowledge to identify hate speech. [12] pro-
+posed a reinforcement learning model HateGAN to address
+the problem of imbalance class by data augmentation. [10]
+presented a hate speech detection dataset and used GPT-2 [11]
+to pre-train the detection model. [29] proposed the sentiment
+knowledge sharing (SKS) model combined with a negative
+
+--- Context around line 184 ---
+the problem of imbalance class by data augmentation. [10]
+presented a hate speech detection dataset and used GPT-2 [11]
+to pre-train the detection model. [29] proposed the sentiment
+knowledge sharing (SKS) model combined with a negative
+word list and multi-task learning for hate speech detection.
+[45] evaluated the effectiveness of model to introduce infusing
+knowledge on out-of-distribution data. [47]–[49] facilitated the
+
+--- Context around line 185 ---
+presented a hate speech detection dataset and used GPT-2 [11]
+to pre-train the detection model. [29] proposed the sentiment
+knowledge sharing (SKS) model combined with a negative
+word list and multi-task learning for hate speech detection.
+[45] evaluated the effectiveness of model to introduce infusing
+knowledge on out-of-distribution data. [47]–[49] facilitated the
+detection of implicit hate speech. Previous research shows
+
+--- Context around line 186 ---
+to pre-train the detection model. [29] proposed the sentiment
+knowledge sharing (SKS) model combined with a negative
+word list and multi-task learning for hate speech detection.
+[45] evaluated the effectiveness of model to introduce infusing
+knowledge on out-of-distribution data. [47]–[49] facilitated the
+detection of implicit hate speech. Previous research shows
+that deep learning based models can better obtain contextual
+
+--- Context around line 187 ---
+knowledge sharing (SKS) model combined with a negative
+word list and multi-task learning for hate speech detection.
+[45] evaluated the effectiveness of model to introduce infusing
+knowledge on out-of-distribution data. [47]–[49] facilitated the
+detection of implicit hate speech. Previous research shows
+that deep learning based models can better obtain contextual
+information. In addition, compared with the normative data
+
+--- Context around line 190 ---
+knowledge on out-of-distribution data. [47]–[49] facilitated the
+detection of implicit hate speech. Previous research shows
+that deep learning based models can better obtain contextual
+information. In addition, compared with the normative data
+in NLI tasks, hate speech crawled from social media is
+more nuanced, subjective, and contextual [46], which presents
+a huge challenge to natural language understanding. It is
+
+--- Context around line 197 ---
+imperative to consider task-specific characteristics, such as the
+subjectivity and contextualization of hate speech, in designing
+effective detection models. Moreover, previous research has
+also demonstrated that the general methods of NLI task
+have limited performance in hate speech detection task [43].
+Therefore, we propose a dual contrastive learning method for
+hate speech detection.
+
+--- Context around line 198 ---
+subjectivity and contextualization of hate speech, in designing
+effective detection models. Moreover, previous research has
+also demonstrated that the general methods of NLI task
+have limited performance in hate speech detection task [43].
+Therefore, we propose a dual contrastive learning method for
+hate speech detection.
+B. Contrastive Learning Methods
+
+--- Context around line 200 ---
+also demonstrated that the general methods of NLI task
+have limited performance in hate speech detection task [43].
+Therefore, we propose a dual contrastive learning method for
+hate speech detection.
+B. Contrastive Learning Methods
+Contrastive learning learns representations by contrasting
+positive and negative samples [14] and it has been widely
+
+--- Context around line 202 ---
+Therefore, we propose a dual contrastive learning method for
+hate speech detection.
+B. Contrastive Learning Methods
+Contrastive learning learns representations by contrasting
+positive and negative samples [14] and it has been widely
+employed in computer vision tasks [35]–[42] for extracting in-
+depth supervision signals from the data itself. Nan et al. [15]
+
+--- Context around line 203 ---
+hate speech detection.
+B. Contrastive Learning Methods
+Contrastive learning learns representations by contrasting
+positive and negative samples [14] and it has been widely
+employed in computer vision tasks [35]–[42] for extracting in-
+depth supervision signals from the data itself. Nan et al. [15]
+introduced a dual contrastive learning approach to better align
+
+--- Context around line 207 ---
+employed in computer vision tasks [35]–[42] for extracting in-
+depth supervision signals from the data itself. Nan et al. [15]
+introduced a dual contrastive learning approach to better align
+text and video. Han et al. [16] proposed a novel method based
+on contrastive learning and a dual learning setting (exploiting
+two encoders) to infer an efficient mapping between unpaired
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 3
+
+--- Context around line 208 ---
+depth supervision signals from the data itself. Nan et al. [15]
+introduced a dual contrastive learning approach to better align
+text and video. Han et al. [16] proposed a novel method based
+on contrastive learning and a dual learning setting (exploiting
+two encoders) to infer an efficient mapping between unpaired
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 3
+Fig. 1. The overall framework of our model. CLseandCLsuare short for the self-supervised contrastive loss and the supervised contrastive loss, respectively.
+
+--- Context around line 209 ---
+introduced a dual contrastive learning approach to better align
+text and video. Han et al. [16] proposed a novel method based
+on contrastive learning and a dual learning setting (exploiting
+two encoders) to infer an efficient mapping between unpaired
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 3
+Fig. 1. The overall framework of our model. CLseandCLsuare short for the self-supervised contrastive loss and the supervised contrastive loss, respectively.
+FL represents the focal loss. Loss represents the final loss function. The colors of circles denote the labels of sentences, embedded as Emb (xi). Based
+
+--- Context around line 212 ---
+two encoders) to infer an efficient mapping between unpaired
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 3
+Fig. 1. The overall framework of our model. CLseandCLsuare short for the self-supervised contrastive loss and the supervised contrastive loss, respectively.
+FL represents the focal loss. Loss represents the final loss function. The colors of circles denote the labels of sentences, embedded as Emb (xi). Based
+onEmb (xi), two augmented samples zjandz+
+jcan be generated using independently sampled dropout masks. Given zjas the reference object, the solid
+blue/orange arrows point to the positive samples of zjinCLse/CL su, while the dashed blue/orange arrows point to the contrastive samples in CLse/CL su.
+
+--- Context around line 216 ---
+onEmb (xi), two augmented samples zjandz+
+jcan be generated using independently sampled dropout masks. Given zjas the reference object, the solid
+blue/orange arrows point to the positive samples of zjinCLse/CL su, while the dashed blue/orange arrows point to the contrastive samples in CLse/CL su.
+data. Li et al. [17] proposed a contrastive learning framework
+to learn instance and cluster representations.
+Contrastive learning has a wide range of applications in
+NLP, seeking for learning high-dimensional latent features of
+
+--- Context around line 217 ---
+jcan be generated using independently sampled dropout masks. Given zjas the reference object, the solid
+blue/orange arrows point to the positive samples of zjinCLse/CL su, while the dashed blue/orange arrows point to the contrastive samples in CLse/CL su.
+data. Li et al. [17] proposed a contrastive learning framework
+to learn instance and cluster representations.
+Contrastive learning has a wide range of applications in
+NLP, seeking for learning high-dimensional latent features of
+sentences by reducing reconstruction error. For example, Gao
+
+--- Context around line 219 ---
+data. Li et al. [17] proposed a contrastive learning framework
+to learn instance and cluster representations.
+Contrastive learning has a wide range of applications in
+NLP, seeking for learning high-dimensional latent features of
+sentences by reducing reconstruction error. For example, Gao
+et al. [18] used standard dropout as noise twice for a sentence
+embedding to build contrastive samples and proposed SimCSE
+
+--- Context around line 220 ---
+to learn instance and cluster representations.
+Contrastive learning has a wide range of applications in
+NLP, seeking for learning high-dimensional latent features of
+sentences by reducing reconstruction error. For example, Gao
+et al. [18] used standard dropout as noise twice for a sentence
+embedding to build contrastive samples and proposed SimCSE
+to calculate semantic similarity. [19] and [20] proposed super-
+
+--- Context around line 223 ---
+sentences by reducing reconstruction error. For example, Gao
+et al. [18] used standard dropout as noise twice for a sentence
+embedding to build contrastive samples and proposed SimCSE
+to calculate semantic similarity. [19] and [20] proposed super-
+vised contrastive loss combined with cross-entropy to train a
+classification model for natural language understanding. [36]
+proposed a self-supervised clustering with contrastive learning
+
+--- Context around line 225 ---
+embedding to build contrastive samples and proposed SimCSE
+to calculate semantic similarity. [19] and [20] proposed super-
+vised contrastive loss combined with cross-entropy to train a
+classification model for natural language understanding. [36]
+proposed a self-supervised clustering with contrastive learning
+for general NLI tasks. This method integrates both instance-
+level and cluster-level self-supervised contrastive learning to
+
+--- Context around line 226 ---
+to calculate semantic similarity. [19] and [20] proposed super-
+vised contrastive loss combined with cross-entropy to train a
+classification model for natural language understanding. [36]
+proposed a self-supervised clustering with contrastive learning
+for general NLI tasks. This method integrates both instance-
+level and cluster-level self-supervised contrastive learning to
+obtain pseudo labels, which are further used for representation
+
+--- Context around line 227 ---
+vised contrastive loss combined with cross-entropy to train a
+classification model for natural language understanding. [36]
+proposed a self-supervised clustering with contrastive learning
+for general NLI tasks. This method integrates both instance-
+level and cluster-level self-supervised contrastive learning to
+obtain pseudo labels, which are further used for representation
+learning. However, due to the subjectivity and contextualiza-
+
+--- Context around line 228 ---
+classification model for natural language understanding. [36]
+proposed a self-supervised clustering with contrastive learning
+for general NLI tasks. This method integrates both instance-
+level and cluster-level self-supervised contrastive learning to
+obtain pseudo labels, which are further used for representation
+learning. However, due to the subjectivity and contextualiza-
+tion of hate speech [46], pseudo labels generated by general
+
+--- Context around line 229 ---
+proposed a self-supervised clustering with contrastive learning
+for general NLI tasks. This method integrates both instance-
+level and cluster-level self-supervised contrastive learning to
+obtain pseudo labels, which are further used for representation
+learning. However, due to the subjectivity and contextualiza-
+tion of hate speech [46], pseudo labels generated by general
+self-supervised methods would become unreliable and difficult
+
+--- Context around line 231 ---
+level and cluster-level self-supervised contrastive learning to
+obtain pseudo labels, which are further used for representation
+learning. However, due to the subjectivity and contextualiza-
+tion of hate speech [46], pseudo labels generated by general
+self-supervised methods would become unreliable and difficult
+to use to determine whether a sentence contains hate speech.
+Totally different from [36], we propose a dual contrastive
+
+--- Context around line 233 ---
+learning. However, due to the subjectivity and contextualiza-
+tion of hate speech [46], pseudo labels generated by general
+self-supervised methods would become unreliable and difficult
+to use to determine whether a sentence contains hate speech.
+Totally different from [36], we propose a dual contrastive
+learning method for the task of hate speech detection. By
+considering the task-specific characteristics shown in Section
+
+--- Context around line 235 ---
+self-supervised methods would become unreliable and difficult
+to use to determine whether a sentence contains hate speech.
+Totally different from [36], we propose a dual contrastive
+learning method for the task of hate speech detection. By
+considering the task-specific characteristics shown in Section
+II.A, our model integrates both self-supervised and supervised
+contrastive learning to enrich the semantic representations of
+
+--- Context around line 236 ---
+to use to determine whether a sentence contains hate speech.
+Totally different from [36], we propose a dual contrastive
+learning method for the task of hate speech detection. By
+considering the task-specific characteristics shown in Section
+II.A, our model integrates both self-supervised and supervised
+contrastive learning to enrich the semantic representations of
+hate speech.
+
+--- Context around line 238 ---
+learning method for the task of hate speech detection. By
+considering the task-specific characteristics shown in Section
+II.A, our model integrates both self-supervised and supervised
+contrastive learning to enrich the semantic representations of
+hate speech.
+III. M ETHODOLOGY
+In this section, we introduce our model named DCL for hate
+
+--- Context around line 239 ---
+considering the task-specific characteristics shown in Section
+II.A, our model integrates both self-supervised and supervised
+contrastive learning to enrich the semantic representations of
+hate speech.
+III. M ETHODOLOGY
+In this section, we introduce our model named DCL for hate
+speech detection. Our model seeks to learn adversarial samplesusing dual contrastive learning mechanisms. We first illustrate
+
+--- Context around line 242 ---
+hate speech.
+III. M ETHODOLOGY
+In this section, we introduce our model named DCL for hate
+speech detection. Our model seeks to learn adversarial samplesusing dual contrastive learning mechanisms. We first illustrate
+the overall framework of our model and then introduce the
+self-supervised contrastive learning and the supervised con-
+trastive learning used in our model. Besides, we provide more
+
+--- Context around line 243 ---
+III. M ETHODOLOGY
+In this section, we introduce our model named DCL for hate
+speech detection. Our model seeks to learn adversarial samplesusing dual contrastive learning mechanisms. We first illustrate
+the overall framework of our model and then introduce the
+self-supervised contrastive learning and the supervised con-
+trastive learning used in our model. Besides, we provide more
+implementation details for easily reproducing our model.
+
+--- Context around line 244 ---
+In this section, we introduce our model named DCL for hate
+speech detection. Our model seeks to learn adversarial samplesusing dual contrastive learning mechanisms. We first illustrate
+the overall framework of our model and then introduce the
+self-supervised contrastive learning and the supervised con-
+trastive learning used in our model. Besides, we provide more
+implementation details for easily reproducing our model.
+A. Overall Framework
+
+--- Context around line 245 ---
+speech detection. Our model seeks to learn adversarial samplesusing dual contrastive learning mechanisms. We first illustrate
+the overall framework of our model and then introduce the
+self-supervised contrastive learning and the supervised con-
+trastive learning used in our model. Besides, we provide more
+implementation details for easily reproducing our model.
+A. Overall Framework
+Fig. 1 shows the overall framework of our DCL model for
+
+--- Context around line 246 ---
+the overall framework of our model and then introduce the
+self-supervised contrastive learning and the supervised con-
+trastive learning used in our model. Besides, we provide more
+implementation details for easily reproducing our model.
+A. Overall Framework
+Fig. 1 shows the overall framework of our DCL model for
+hate speech detection. The input of our framework is a set of
+
+--- Context around line 247 ---
+self-supervised contrastive learning and the supervised con-
+trastive learning used in our model. Besides, we provide more
+implementation details for easily reproducing our model.
+A. Overall Framework
+Fig. 1 shows the overall framework of our DCL model for
+hate speech detection. The input of our framework is a set of
+sentences including hate and non-hate speeches. Pre-trained
+
+--- Context around line 248 ---
+trastive learning used in our model. Besides, we provide more
+implementation details for easily reproducing our model.
+A. Overall Framework
+Fig. 1 shows the overall framework of our DCL model for
+hate speech detection. The input of our framework is a set of
+sentences including hate and non-hate speeches. Pre-trained
+BERT [22] is employed to represent the sentences, and data
+
+--- Context around line 249 ---
+implementation details for easily reproducing our model.
+A. Overall Framework
+Fig. 1 shows the overall framework of our DCL model for
+hate speech detection. The input of our framework is a set of
+sentences including hate and non-hate speeches. Pre-trained
+BERT [22] is employed to represent the sentences, and data
+augmentation is performed for two-stage contrastive learning.
+
+--- Context around line 250 ---
+A. Overall Framework
+Fig. 1 shows the overall framework of our DCL model for
+hate speech detection. The input of our framework is a set of
+sentences including hate and non-hate speeches. Pre-trained
+BERT [22] is employed to represent the sentences, and data
+augmentation is performed for two-stage contrastive learning.
+The first stage adopts self-supervised contrastive learning to
+
+--- Context around line 253 ---
+sentences including hate and non-hate speeches. Pre-trained
+BERT [22] is employed to represent the sentences, and data
+augmentation is performed for two-stage contrastive learning.
+The first stage adopts self-supervised contrastive learning to
+make our model learn representations that are invariant to
+different views of positive pairs of hate speech, which are
+generated from the same sample by strong data augmentation,
+
+--- Context around line 254 ---
+BERT [22] is employed to represent the sentences, and data
+augmentation is performed for two-stage contrastive learning.
+The first stage adopts self-supervised contrastive learning to
+make our model learn representations that are invariant to
+different views of positive pairs of hate speech, which are
+generated from the same sample by strong data augmentation,
+while maximizing the distance between negative pairs of
+
+--- Context around line 255 ---
+augmentation is performed for two-stage contrastive learning.
+The first stage adopts self-supervised contrastive learning to
+make our model learn representations that are invariant to
+different views of positive pairs of hate speech, which are
+generated from the same sample by strong data augmentation,
+while maximizing the distance between negative pairs of
+non-hate speech. In the second stage, supervised contrastive
+
+--- Context around line 259 ---
+generated from the same sample by strong data augmentation,
+while maximizing the distance between negative pairs of
+non-hate speech. In the second stage, supervised contrastive
+learning utilizes the label information to pull clusters of points
+belonging to the same class together in embedding space,
+while pushing apart clusters of samples from different classes.
+Finally, we integrate the dual contrastive learning objectives
+
+--- Context around line 260 ---
+while maximizing the distance between negative pairs of
+non-hate speech. In the second stage, supervised contrastive
+learning utilizes the label information to pull clusters of points
+belonging to the same class together in embedding space,
+while pushing apart clusters of samples from different classes.
+Finally, we integrate the dual contrastive learning objectives
+into the focal loss for model optimization to alleviate the
+
+--- Context around line 263 ---
+belonging to the same class together in embedding space,
+while pushing apart clusters of samples from different classes.
+Finally, we integrate the dual contrastive learning objectives
+into the focal loss for model optimization to alleviate the
+problem of data imbalance in hate speech detection.
+B. Self-Supervised Contrastive Learning
+Considering the complicated expressions and ambiguous
+
+--- Context around line 264 ---
+while pushing apart clusters of samples from different classes.
+Finally, we integrate the dual contrastive learning objectives
+into the focal loss for model optimization to alleviate the
+problem of data imbalance in hate speech detection.
+B. Self-Supervised Contrastive Learning
+Considering the complicated expressions and ambiguous
+semantics in hate speech expressions, we propose to use
+
+--- Context around line 266 ---
+into the focal loss for model optimization to alleviate the
+problem of data imbalance in hate speech detection.
+B. Self-Supervised Contrastive Learning
+Considering the complicated expressions and ambiguous
+semantics in hate speech expressions, we propose to use
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 4
+self-supervised contrastive learning for data augmentation and
+
+--- Context around line 270 ---
+semantics in hate speech expressions, we propose to use
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 4
+self-supervised contrastive learning for data augmentation and
+deep semantic information mining. By building positive and
+negative samples, self-supervised contrastive learning captures
+more comprehensive span-level features beyond token-level
+semantics for effectively distinguishing different samples. For
+
+--- Context around line 272 ---
+self-supervised contrastive learning for data augmentation and
+deep semantic information mining. By building positive and
+negative samples, self-supervised contrastive learning captures
+more comprehensive span-level features beyond token-level
+semantics for effectively distinguishing different samples. For
+hate speech detection, we propose a self-supervised contrastive
+learning method for mining potential useful semantic informa-
+
+--- Context around line 275 ---
+more comprehensive span-level features beyond token-level
+semantics for effectively distinguishing different samples. For
+hate speech detection, we propose a self-supervised contrastive
+learning method for mining potential useful semantic informa-
+tion of sentences in the model training process.
+Our self-supervised contrastive objective intends to distin-
+guish positive samples constructed by data augmentation for
+
+--- Context around line 276 ---
+semantics for effectively distinguishing different samples. For
+hate speech detection, we propose a self-supervised contrastive
+learning method for mining potential useful semantic informa-
+tion of sentences in the model training process.
+Our self-supervised contrastive objective intends to distin-
+guish positive samples constructed by data augmentation for
+each input sample against a set of negative samples in each
+
+--- Context around line 277 ---
+hate speech detection, we propose a self-supervised contrastive
+learning method for mining potential useful semantic informa-
+tion of sentences in the model training process.
+Our self-supervised contrastive objective intends to distin-
+guish positive samples constructed by data augmentation for
+each input sample against a set of negative samples in each
+batch of data. Inspired by a simple yet powerful sampling
+
+--- Context around line 278 ---
+learning method for mining potential useful semantic informa-
+tion of sentences in the model training process.
+Our self-supervised contrastive objective intends to distin-
+guish positive samples constructed by data augmentation for
+each input sample against a set of negative samples in each
+batch of data. Inspired by a simple yet powerful sampling
+strategy [18], we predict the input sentences itself with dropout
+
+--- Context around line 285 ---
+noises [31] to retain the maximum semantic information of
+hate speech. Other sampling strategies can also be integrated
+in our framework, which remains as future work.
+Specifically, for an input sentence xi, we use standard
+dropout as noise twice for each sentence embedding, denoted
+asEmb(xi). Based on Emb(xi), two augmented samples
+zjandz+
+
+--- Context around line 295 ---
+j)is regarded as a pair of positive samples, and
+other samples in the same batch are treated as negative ones.
+Based on this idea, our self-supervised contrastive learning
+loss for hate speech detection can be formulated as follows.
+CLse=−2NX
+j=1logesim(zj,z+
+j)/τse
+
+--- Context around line 313 ---
+∥zj∥∥z+
+j∥.
+C. Supervised Contrastive Loss
+Self-supervised contrastive learning augments the training
+data by highlighting the Span-level semantics of hate speech
+from the data itself. To further incorporate supervised sig-
+nals for hate speech detection, we use supervised contrastive
+
+--- Context around line 314 ---
+j∥.
+C. Supervised Contrastive Loss
+Self-supervised contrastive learning augments the training
+data by highlighting the Span-level semantics of hate speech
+from the data itself. To further incorporate supervised sig-
+nals for hate speech detection, we use supervised contrastive
+learning on the basis of the augmented data. In other words,
+
+--- Context around line 317 ---
+data by highlighting the Span-level semantics of hate speech
+from the data itself. To further incorporate supervised sig-
+nals for hate speech detection, we use supervised contrastive
+learning on the basis of the augmented data. In other words,
+our supervised contrastive learning method integrates label
+information into the embedding space of the input sentences.
+The learned sentence embedding contrasts a set of posi-
+
+--- Context around line 318 ---
+from the data itself. To further incorporate supervised sig-
+nals for hate speech detection, we use supervised contrastive
+learning on the basis of the augmented data. In other words,
+our supervised contrastive learning method integrates label
+information into the embedding space of the input sentences.
+The learned sentence embedding contrasts a set of posi-
+tive samples against a set of negative samples in the same
+
+--- Context around line 319 ---
+nals for hate speech detection, we use supervised contrastive
+learning on the basis of the augmented data. In other words,
+our supervised contrastive learning method integrates label
+information into the embedding space of the input sentences.
+The learned sentence embedding contrasts a set of posi-
+tive samples against a set of negative samples in the same
+batch. Compared with self-supervised contrastive learning,
+
+--- Context around line 323 ---
+The learned sentence embedding contrasts a set of posi-
+tive samples against a set of negative samples in the same
+batch. Compared with self-supervised contrastive learning,
+supervised contrastive learning incorporates more supervised
+information by considering more positive samples for each
+sampling batch. Specifically, for a batch of data with N
+samples, supervised contrastive loss can be formulated as
+
+--- Context around line 324 ---
+tive samples against a set of negative samples in the same
+batch. Compared with self-supervised contrastive learning,
+supervised contrastive learning incorporates more supervised
+information by considering more positive samples for each
+sampling batch. Specifically, for a batch of data with N
+samples, supervised contrastive loss can be formulated as
+follows:
+
+--- Context around line 327 ---
+information by considering more positive samples for each
+sampling batch. Specifically, for a batch of data with N
+samples, supervised contrastive loss can be formulated as
+follows:
+CLsu=−NX
+i=11
+Nyi−1NX
+
+--- Context around line 339 ---
+the label of ziandzj, respectively. Nyiis the number of
+samples with the same label as zi.τsuis the non-negative
+temperature coefficient of supervised contrastive loss. CLsu
+further guides the model with supervised information for
+building effective detection models. To jointly combine self-
+supervised and supervised information, we use an overall loss
+function of contrastive learning as follows:
+
+--- Context around line 340 ---
+samples with the same label as zi.τsuis the non-negative
+temperature coefficient of supervised contrastive loss. CLsu
+further guides the model with supervised information for
+building effective detection models. To jointly combine self-
+supervised and supervised information, we use an overall loss
+function of contrastive learning as follows:
+CL=CLse+CLsu. (3)
+
+--- Context around line 341 ---
+temperature coefficient of supervised contrastive loss. CLsu
+further guides the model with supervised information for
+building effective detection models. To jointly combine self-
+supervised and supervised information, we use an overall loss
+function of contrastive learning as follows:
+CL=CLse+CLsu. (3)
+D. DCL Integrating Focal Loss
+
+--- Context around line 343 ---
+building effective detection models. To jointly combine self-
+supervised and supervised information, we use an overall loss
+function of contrastive learning as follows:
+CL=CLse+CLsu. (3)
+D. DCL Integrating Focal Loss
+We represent the input sentences using the pre-trained
+language model BERT [22]. Any sentence xiis embedded
+
+--- Context around line 347 ---
+D. DCL Integrating Focal Loss
+We represent the input sentences using the pre-trained
+language model BERT [22]. Any sentence xiis embedded
+as representations denoted as Emb(xi)∈Rn×demb, where n
+is the sequence length of xi, and dembis the dimension of the
+embedding. A max-pooling layer is then applied to convert
+Emb(xi)into a vector representation zi∈R1×dembthat is
+
+--- Context around line 369 ---
+where γis a non-negative tunable focusing parameter to
+differentiate between easy and difficult samples. A smaller
+value of γguides the learned model to focus more on the
+misclassified samples, and meanwhile reducing the relative
+loss for well-classified samples. α∈[0,1]is a weighting factor
+to balance the importance of positive and negative samples,
+which is defined as:
+
+--- Context around line 384 ---
+where pi∈[0,1]is the estimated probability for the class
+with the label yi= 1 in each sentence embedding zi. During
+the training phase, the focal loss and the contrastive learning
+loss are jointly optimized. To learn a more robust model, we
+introduce a weighting coefficient λto balance the impact of
+these two loss functions. The final loss is defined as:
+Loss =FL+λ·CL, (8)
+
+--- Context around line 385 ---
+with the label yi= 1 in each sentence embedding zi. During
+the training phase, the focal loss and the contrastive learning
+loss are jointly optimized. To learn a more robust model, we
+introduce a weighting coefficient λto balance the impact of
+these two loss functions. The final loss is defined as:
+Loss =FL+λ·CL, (8)
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 5
+
+--- Context around line 392 ---
+where λ∈[0,1]is the weighting coefficient.
+IV. E XPERIMENTS
+In this section, we evaluate the performance of our model.
+We first introduce the two commonly-used datasets, experi-
+mental settings, and baselines, and then present the evaluation
+results of our model compared with other baseline models.
+A. Datasets
+
+--- Context around line 395 ---
+We first introduce the two commonly-used datasets, experi-
+mental settings, and baselines, and then present the evaluation
+results of our model compared with other baseline models.
+A. Datasets
+We conduct our experiment on two publicly available
+datasets, which have been widely used in related research for
+comparison of hate speech detection models. The details of
+
+--- Context around line 399 ---
+We conduct our experiment on two publicly available
+datasets, which have been widely used in related research for
+comparison of hate speech detection models. The details of
+these datasets are introduced as follows:
+SemEval-2019 Task-5 (SE) The SE dataset came from the
+Task-5 of SemEval-2019 [23]. The subtask A of this evaluation
+is hate speech detection. The hate speech of this dataset is
+
+--- Context around line 423 ---
+layer of bert-base-cased is taken as 768-dimensional sentence
+embedding. We use the 0.5 dropout rate and the AdamW
+optimizer [34] for model training. The learning rate is set to
+be 1e-4 and the batch size as 128. We set τse= 0.1in the
+self-supervised contrastive loss, τsu= 0.05in the supervised
+contrastive loss and α= 0.3andγ= 2 in the focal loss. All
+models were trained on NVIDIA GeForce GTX 1080 GPU.
+
+--- Context around line 425 ---
+optimizer [34] for model training. The learning rate is set to
+be 1e-4 and the batch size as 128. We set τse= 0.1in the
+self-supervised contrastive loss, τsu= 0.05in the supervised
+contrastive loss and α= 0.3andγ= 2 in the focal loss. All
+models were trained on NVIDIA GeForce GTX 1080 GPU.
+To compare with baseline methods, we use accuracy (Acc)
+and F-measure (F1) as evaluation metrics and import the
+
+--- Context around line 426 ---
+be 1e-4 and the batch size as 128. We set τse= 0.1in the
+self-supervised contrastive loss, τsu= 0.05in the supervised
+contrastive loss and α= 0.3andγ= 2 in the focal loss. All
+models were trained on NVIDIA GeForce GTX 1080 GPU.
+To compare with baseline methods, we use accuracy (Acc)
+and F-measure (F1) as evaluation metrics and import the
+experimental results of baseline methods from the literature.
+
+--- Context around line 427 ---
+self-supervised contrastive loss, τsu= 0.05in the supervised
+contrastive loss and α= 0.3andγ= 2 in the focal loss. All
+models were trained on NVIDIA GeForce GTX 1080 GPU.
+To compare with baseline methods, we use accuracy (Acc)
+and F-measure (F1) as evaluation metrics and import the
+experimental results of baseline methods from the literature.
+Since the SE dataset is from an evaluation task, the reported
+
+--- Context around line 428 ---
+contrastive loss and α= 0.3andγ= 2 in the focal loss. All
+models were trained on NVIDIA GeForce GTX 1080 GPU.
+To compare with baseline methods, we use accuracy (Acc)
+and F-measure (F1) as evaluation metrics and import the
+experimental results of baseline methods from the literature.
+Since the SE dataset is from an evaluation task, the reported
+experimental results are based on the performance of the
+
+--- Context around line 430 ---
+To compare with baseline methods, we use accuracy (Acc)
+and F-measure (F1) as evaluation metrics and import the
+experimental results of baseline methods from the literature.
+Since the SE dataset is from an evaluation task, the reported
+experimental results are based on the performance of the
+test set of the official evaluation. We select the models and
+hyperparameters that perform best on the validation set and
+
+--- Context around line 433 ---
+Since the SE dataset is from an evaluation task, the reported
+experimental results are based on the performance of the
+test set of the official evaluation. We select the models and
+hyperparameters that perform best on the validation set and
+evaluate the performance on the test set. Results are evaluated
+based on the officially designated metrics, including accuracy
+(Acc) and macro F1. For the DV dataset, we adopt the mean
+
+--- Context around line 439 ---
+(Acc) and macro F1. For the DV dataset, we adopt the mean
+accuracy and the weighted F1 after five-fold cross-validation,
+and save the parameters corresponding to the optimal model,
+which follows the settings in previous work [29]. We used
+the different F1 score metrics on two datasets following
+existing studies, such as the SOTA baseline model SKS [29]TABLE II
+COMPARISON WITH BASELINES ON SE AND DV. T HE RESULTS WITH AN
+
+--- Context around line 442 ---
+which follows the settings in previous work [29]. We used
+the different F1 score metrics on two datasets following
+existing studies, such as the SOTA baseline model SKS [29]TABLE II
+COMPARISON WITH BASELINES ON SE AND DV. T HE RESULTS WITH AN
+ASTERISK (*) ARE IMPORTED FROM THE LITERATURE .
+Dataset SE DV
+Metrics Acc. macro-F1 Acc. weighted-F1
+
+--- Context around line 464 ---
+macro-F1 is used on DV , the performance of hate samples will
+dominate the overall performance. Therefore, to make more
+reasonable evaluations of different models on DV , weighted
+F1 is designed for this dataset, which considers the weights
+of hate and non-hate samples.
+C. Baseline Methods
+We compare our model with the following baselines:
+
+--- Context around line 467 ---
+F1 is designed for this dataset, which considers the weights
+of hate and non-hate samples.
+C. Baseline Methods
+We compare our model with the following baselines:
+SVM. The SVM-based hate speech detection model was
+proposed by Zhang et al. [25] and Mandl et al. [26]. The re-
+searchers extracted several statistical features, such as n-gram,
+
+--- Context around line 468 ---
+of hate and non-hate samples.
+C. Baseline Methods
+We compare our model with the following baselines:
+SVM. The SVM-based hate speech detection model was
+proposed by Zhang et al. [25] and Mandl et al. [26]. The re-
+searchers extracted several statistical features, such as n-gram,
+insulting words, and the frequency of particular punctuation
+
+--- Context around line 469 ---
+C. Baseline Methods
+We compare our model with the following baselines:
+SVM. The SVM-based hate speech detection model was
+proposed by Zhang et al. [25] and Mandl et al. [26]. The re-
+searchers extracted several statistical features, such as n-gram,
+insulting words, and the frequency of particular punctuation
+marks for learning SVM classifiers.
+
+--- Context around line 473 ---
+searchers extracted several statistical features, such as n-gram,
+insulting words, and the frequency of particular punctuation
+marks for learning SVM classifiers.
+LSTM, GRU, Bi-LSTM. These methods were proposed by
+Ding et al. [27]. They employed word embedding and learned
+sentence representations using LSTM, GRU, and Bi-LSTM to
+detect hate speech, respectively.
+
+--- Context around line 474 ---
+insulting words, and the frequency of particular punctuation
+marks for learning SVM classifiers.
+LSTM, GRU, Bi-LSTM. These methods were proposed by
+Ding et al. [27]. They employed word embedding and learned
+sentence representations using LSTM, GRU, and Bi-LSTM to
+detect hate speech, respectively.
+CNN-GRU. Zhang et al. [25] applied convolution-GRU
+
+--- Context around line 486 ---
+sentence embedding in hate speech detection. The classifier
+consists of a feed-forward layer and a softmax function. For a
+fair comparison, we train the model using cross-entropy loss
+and focal loss, respectively.
+SKS. It was proposed by Zhou et al. [29]. This approach
+detected hate speech based on sentiment knowledge sharing
+and achieved state-of-the-art performance on the Davidson
+
+--- Context around line 488 ---
+fair comparison, we train the model using cross-entropy loss
+and focal loss, respectively.
+SKS. It was proposed by Zhou et al. [29]. This approach
+detected hate speech based on sentiment knowledge sharing
+and achieved state-of-the-art performance on the Davidson
+dataset and SemEval-2019 Task-5, which is a strong baseline
+for comparison.
+
+--- Context around line 506 ---
+subtle differences in data distributions can significantly affect
+the detection performance.
+(2) The performance of neural network-based models is
+much better than the SVM-based models with manually
+crafted features. Compared with LSTM and its variants, hybrid
+neural networks, such as CNN-GRU achieved better perfor-
+mance, particularly on the SE dataset. Furthermore, SKS,
+
+--- Context around line 507 ---
+the detection performance.
+(2) The performance of neural network-based models is
+much better than the SVM-based models with manually
+crafted features. Compared with LSTM and its variants, hybrid
+neural networks, such as CNN-GRU achieved better perfor-
+mance, particularly on the SE dataset. Furthermore, SKS,
+benefiting from its sentiment knowledge-sharing mechanism
+
+--- Context around line 512 ---
+mance, particularly on the SE dataset. Furthermore, SKS,
+benefiting from its sentiment knowledge-sharing mechanism
+and multi-task learning, achieved the best performance among
+all the baselines.
+(3) Our model DCL outperformed all the baseline models
+on the SE dataset. The improvement of DCL over the BERT-
+based model is 13%, and the improvement over LSTM, GRU,
+
+--- Context around line 514 ---
+and multi-task learning, achieved the best performance among
+all the baselines.
+(3) Our model DCL outperformed all the baseline models
+on the SE dataset. The improvement of DCL over the BERT-
+based model is 13%, and the improvement over LSTM, GRU,
+and SVM is more 10% in terms of the macro-F1 and the
+accuracy. Compared with the best-performed baseline model
+
+--- Context around line 516 ---
+(3) Our model DCL outperformed all the baseline models
+on the SE dataset. The improvement of DCL over the BERT-
+based model is 13%, and the improvement over LSTM, GRU,
+and SVM is more 10% in terms of the macro-F1 and the
+accuracy. Compared with the best-performed baseline model
+SKS, DCL is superior in terms of both metrics.
+(4) On the DV dataset, DCL achieved the best performance
+
+--- Context around line 518 ---
+based model is 13%, and the improvement over LSTM, GRU,
+and SVM is more 10% in terms of the macro-F1 and the
+accuracy. Compared with the best-performed baseline model
+SKS, DCL is superior in terms of both metrics.
+(4) On the DV dataset, DCL achieved the best performance
+by accuracy, and better performance by weighted-F1 than all
+the baseline models except SKS. This is because SKS used
+
+--- Context around line 522 ---
+(4) On the DV dataset, DCL achieved the best performance
+by accuracy, and better performance by weighted-F1 than all
+the baseline models except SKS. This is because SKS used
+an external sentiment dataset to enhance the performance.
+Although DCL does not use any external data, DCL achieved
+higher accuracy than SKS.
+(5) We further analyze the impact of the sequence between
+
+--- Context around line 528 ---
+(5) We further analyze the impact of the sequence between
+the two stages. Specifically, we reverse the order of self-
+supervised and supervised contrastive learning, referred to as
+DCL(R). As the result shown in TABLE II, regardless of the
+order of DCL, it has a more competitive performance than
+baselines on the two datasets. Meanwhile, if self-supervised
+contrastive learning is before supervised contrastive learning,
+
+--- Context around line 532 ---
+order of DCL, it has a more competitive performance than
+baselines on the two datasets. Meanwhile, if self-supervised
+contrastive learning is before supervised contrastive learning,
+DCL has better detection effects. This is because the features
+learned from self-supervised contrastive learning represent
+the context information of the text itself and they are more
+adaptive than supervised training [13]. They can be considered
+
+--- Context around line 534 ---
+contrastive learning is before supervised contrastive learning,
+DCL has better detection effects. This is because the features
+learned from self-supervised contrastive learning represent
+the context information of the text itself and they are more
+adaptive than supervised training [13]. They can be considered
+as prior knowledge facilitating model decisions on down-
+stream tasks. Therefore, it is more reasonable to employ self-
+
+--- Context around line 537 ---
+the context information of the text itself and they are more
+adaptive than supervised training [13]. They can be considered
+as prior knowledge facilitating model decisions on down-
+stream tasks. Therefore, it is more reasonable to employ self-
+supervised comparative learning as the first stage of DCL.
+(6) Figure 2 shows the F1-Score of detection performance
+Fig. 3. t-SNE plots of the learned sentence-level embedding zion SemEval-
+
+--- Context around line 539 ---
+as prior knowledge facilitating model decisions on down-
+stream tasks. Therefore, it is more reasonable to employ self-
+supervised comparative learning as the first stage of DCL.
+(6) Figure 2 shows the F1-Score of detection performance
+Fig. 3. t-SNE plots of the learned sentence-level embedding zion SemEval-
+2019 Task-5 test set using the BERT model (left) and our model (right). Cyan:
+non-hate examples; Pink: hate examples.
+
+--- Context around line 542 ---
+(6) Figure 2 shows the F1-Score of detection performance
+Fig. 3. t-SNE plots of the learned sentence-level embedding zion SemEval-
+2019 Task-5 test set using the BERT model (left) and our model (right). Cyan:
+non-hate examples; Pink: hate examples.
+of hate and non-hate samples on SE and DV . From the figure,
+we observe that our model has the more advanced performance
+to distinguish whether the sentences contain hate speech than
+
+--- Context around line 545 ---
+non-hate examples; Pink: hate examples.
+of hate and non-hate samples on SE and DV . From the figure,
+we observe that our model has the more advanced performance
+to distinguish whether the sentences contain hate speech than
+BERT trained with binary cross entropy or focal loss. This
+result indicates that the use of focal loss integrated with
+dual contrastive learning largely alleviates the data imbalance
+
+--- Context around line 549 ---
+BERT trained with binary cross entropy or focal loss. This
+result indicates that the use of focal loss integrated with
+dual contrastive learning largely alleviates the data imbalance
+problem of hate speech detection. For DV , we find that the
+capability of hate speech detection is much lower than that of
+non-hate speech on a model trained using only cross-entropy.
+This is because the DV dataset is extremely imbalanced, which
+
+--- Context around line 552 ---
+problem of hate speech detection. For DV , we find that the
+capability of hate speech detection is much lower than that of
+non-hate speech on a model trained using only cross-entropy.
+This is because the DV dataset is extremely imbalanced, which
+partly hinders the improvement of model performance.
+To further validate the ability of dual contrastive learning
+in reconstructing text representation, we use t-Distributed
+
+--- Context around line 554 ---
+non-hate speech on a model trained using only cross-entropy.
+This is because the DV dataset is extremely imbalanced, which
+partly hinders the improvement of model performance.
+To further validate the ability of dual contrastive learning
+in reconstructing text representation, we use t-Distributed
+Stochastic Neighbor Embedding (t-SNE) [33] to plot the
+learned sentence embedding zi. t-SNE is utilized to reduce
+
+--- Context around line 555 ---
+This is because the DV dataset is extremely imbalanced, which
+partly hinders the improvement of model performance.
+To further validate the ability of dual contrastive learning
+in reconstructing text representation, we use t-Distributed
+Stochastic Neighbor Embedding (t-SNE) [33] to plot the
+learned sentence embedding zi. t-SNE is utilized to reduce
+the dimension of representations from high-dimensional vector
+
+--- Context around line 567 ---
+beddings in Fig. 3. From the figure, we can observe that
+the distinction between hate speech and non-hate speech has
+been improved by introducing dual contrastive learning loss.
+Meanwhile, the vector space of the two classes still overlaps
+in certain dimensions, which indicates that some sentences
+with different labels have similar topical information such as
+immigrants. The vector representations of hate speech samples
+
+--- Context around line 574 ---
+with the same topic tend to be closer than those with the same
+labels (i.e. hate and non-hate). This also leads to the fact that
+pseudo-labels generated by general self-supervised methods,
+such as [36], will become unreliable, making it difficult to
+determine whether a sentence contains hate speech or not. To
+further investigate the effectiveness of the loss functions used
+in our model, we provide an ablation study in the next section.
+
+--- Context around line 578 ---
+determine whether a sentence contains hate speech or not. To
+further investigate the effectiveness of the loss functions used
+in our model, we provide an ablation study in the next section.
+E. Ablation Experiments
+In this section, we investigate the influence of contrastive
+learning and the choice of weighting coefficient λin our
+model, respectively.
+
+--- Context around line 580 ---
+in our model, we provide an ablation study in the next section.
+E. Ablation Experiments
+In this section, we investigate the influence of contrastive
+learning and the choice of weighting coefficient λin our
+model, respectively.
+1) The influence of contrastive learning.: TABLE III shows
+the influence of different parts of our model, where "-self"
+
+--- Context around line 581 ---
+E. Ablation Experiments
+In this section, we investigate the influence of contrastive
+learning and the choice of weighting coefficient λin our
+model, respectively.
+1) The influence of contrastive learning.: TABLE III shows
+the influence of different parts of our model, where "-self"
+is the proposed model without the self-supervised contrastive
+
+--- Context around line 582 ---
+In this section, we investigate the influence of contrastive
+learning and the choice of weighting coefficient λin our
+model, respectively.
+1) The influence of contrastive learning.: TABLE III shows
+the influence of different parts of our model, where "-self"
+is the proposed model without the self-supervised contrastive
+learning, and "-sup" is the proposed model without supervised
+
+--- Context around line 583 ---
+learning and the choice of weighting coefficient λin our
+model, respectively.
+1) The influence of contrastive learning.: TABLE III shows
+the influence of different parts of our model, where "-self"
+is the proposed model without the self-supervised contrastive
+learning, and "-sup" is the proposed model without supervised
+contrastive learning.
+
+--- Context around line 584 ---
+model, respectively.
+1) The influence of contrastive learning.: TABLE III shows
+the influence of different parts of our model, where "-self"
+is the proposed model without the self-supervised contrastive
+learning, and "-sup" is the proposed model without supervised
+contrastive learning.
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 7
+
+--- Context around line 585 ---
+1) The influence of contrastive learning.: TABLE III shows
+the influence of different parts of our model, where "-self"
+is the proposed model without the self-supervised contrastive
+learning, and "-sup" is the proposed model without supervised
+contrastive learning.
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 7
+TABLE III
+
+--- Context around line 586 ---
+the influence of different parts of our model, where "-self"
+is the proposed model without the self-supervised contrastive
+learning, and "-sup" is the proposed model without supervised
+contrastive learning.
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 7
+TABLE III
+THE RESULT OF ABLATION EXPERIMENTS .
+
+--- Context around line 587 ---
+is the proposed model without the self-supervised contrastive
+learning, and "-sup" is the proposed model without supervised
+contrastive learning.
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 7
+TABLE III
+THE RESULT OF ABLATION EXPERIMENTS .
+Dataset SE DV
+
+--- Context around line 596 ---
+-sup 57.5 57.2 95.8 95.5
+DCL 67.8 67.2 95.9 95.6
+Fig. 4. The accuracy of the model under different λ.
+Based on the results in TABLE III, we observe that: (1)
+The self-supervised contrastive learning loss contributes a lot
+on both datasets, which demonstrates that self-supervised con-
+trastive learning can enhance the model’s ability in acquiring
+
+--- Context around line 598 ---
+Fig. 4. The accuracy of the model under different λ.
+Based on the results in TABLE III, we observe that: (1)
+The self-supervised contrastive learning loss contributes a lot
+on both datasets, which demonstrates that self-supervised con-
+trastive learning can enhance the model’s ability in acquiring
+the high-level semantic features of potentially hate speech.
+(2) On different datasets, the performance based on super-
+
+--- Context around line 600 ---
+The self-supervised contrastive learning loss contributes a lot
+on both datasets, which demonstrates that self-supervised con-
+trastive learning can enhance the model’s ability in acquiring
+the high-level semantic features of potentially hate speech.
+(2) On different datasets, the performance based on super-
+vised contrastive learning is quite different. The performance
+decreases more sharply on SE than that on DV . The reason
+
+--- Context around line 603 ---
+the high-level semantic features of potentially hate speech.
+(2) On different datasets, the performance based on super-
+vised contrastive learning is quite different. The performance
+decreases more sharply on SE than that on DV . The reason
+for this phenomenon is that the proportion of hate speech on
+DV is much lower than SE, and our model hardly obtained
+enough positive samples for supervised contrastive learning.
+
+--- Context around line 606 ---
+decreases more sharply on SE than that on DV . The reason
+for this phenomenon is that the proportion of hate speech on
+DV is much lower than SE, and our model hardly obtained
+enough positive samples for supervised contrastive learning.
+On SE, samples are relatively balanced and supervised con-
+trastive learning can make the best of positive and negative
+samples for learning an effective detection model. This finding
+
+--- Context around line 607 ---
+for this phenomenon is that the proportion of hate speech on
+DV is much lower than SE, and our model hardly obtained
+enough positive samples for supervised contrastive learning.
+On SE, samples are relatively balanced and supervised con-
+trastive learning can make the best of positive and negative
+samples for learning an effective detection model. This finding
+indicates that the label information is significant to supervised
+
+--- Context around line 609 ---
+enough positive samples for supervised contrastive learning.
+On SE, samples are relatively balanced and supervised con-
+trastive learning can make the best of positive and negative
+samples for learning an effective detection model. This finding
+indicates that the label information is significant to supervised
+contrastive learning in our model.
+2) The choice of weighting coefficient λ.:To further ex-
+
+--- Context around line 610 ---
+On SE, samples are relatively balanced and supervised con-
+trastive learning can make the best of positive and negative
+samples for learning an effective detection model. This finding
+indicates that the label information is significant to supervised
+contrastive learning in our model.
+2) The choice of weighting coefficient λ.:To further ex-
+amine the influence of contrastive learning in DCL, we tune
+
+--- Context around line 612 ---
+samples for learning an effective detection model. This finding
+indicates that the label information is significant to supervised
+contrastive learning in our model.
+2) The choice of weighting coefficient λ.:To further ex-
+amine the influence of contrastive learning in DCL, we tune
+the weighting coefficient λand report the performance change
+in Fig. 4. From the figure, we observe that on DV , the best
+
+--- Context around line 614 ---
+contrastive learning in our model.
+2) The choice of weighting coefficient λ.:To further ex-
+amine the influence of contrastive learning in DCL, we tune
+the weighting coefficient λand report the performance change
+in Fig. 4. From the figure, we observe that on DV , the best
+performance of DCL can be achieved when λ= 0.2or
+λ= 0.6, while on SE, the best performance is achieved when
+
+--- Context around line 619 ---
+performance of DCL can be achieved when λ= 0.2or
+λ= 0.6, while on SE, the best performance is achieved when
+λ= 1.0. The results indicate that contrastive learning exhibits
+higher performance on the balanced dataset SE, while the focal
+loss contributes more to the imbalanced dataset DV .
+F . Performance of Detecting the Speeches Containing Insult-
+ing Words
+
+--- Context around line 624 ---
+F . Performance of Detecting the Speeches Containing Insult-
+ing Words
+In order to further verify whether our model has a stronger
+ability in detecting speech containing insulting words, we
+conducted this supplementary experiment. We first utilized
+an insulting vocabulary collected from Twitter1[32] and
+NoSwearing2, a website listing swear words. The vocabulary
+
+--- Context around line 631 ---
+1https://github.com/Mrezvan94/Harassment-Corpus
+2https://www.noswearing.com/TABLE IV
+PERFORMANCE OF MODELS TRAINED ON THE SAMPLES CONTAINING
+INSULTING WORDS .
+Dataset SE DV
+Metrics Acc. macro-F1 Acc. weighted-F1
+BERT(BCE) 64.4 63.0 98.3 98.4
+
+--- Context around line 645 ---
+proportion of speeches containing insulting words in these two
+datasets. We then used the refined datasets to examine the
+detection performance of the learned model compared with
+the BERT-based model. The results on these refined datasets
+are reported in TABLE IV and Fig. 2.
+From TABLE IV, we observe that the improvements on
+Acc. and macro-F1 are 6.2% and 7.1% on SE and 0.5% and
+
+--- Context around line 646 ---
+datasets. We then used the refined datasets to examine the
+detection performance of the learned model compared with
+the BERT-based model. The results on these refined datasets
+are reported in TABLE IV and Fig. 2.
+From TABLE IV, we observe that the improvements on
+Acc. and macro-F1 are 6.2% and 7.1% on SE and 0.5% and
+0.4% on DV , respectively. The experimental results showed
+
+--- Context around line 651 ---
+Acc. and macro-F1 are 6.2% and 7.1% on SE and 0.5% and
+0.4% on DV , respectively. The experimental results showed
+that our model has a much stronger ability in detecting
+speeches containing insulting words than the BERT-based
+model. The dual contrastive learning and focal loss of our
+model unitedly contribute to the improved performance of hate
+speech detection.
+
+--- Context around line 653 ---
+that our model has a much stronger ability in detecting
+speeches containing insulting words than the BERT-based
+model. The dual contrastive learning and focal loss of our
+model unitedly contribute to the improved performance of hate
+speech detection.
+G. Detection Examples and Error Analysis
+1) Detection Examples: One advantage of our model is its
+
+--- Context around line 654 ---
+speeches containing insulting words than the BERT-based
+model. The dual contrastive learning and focal loss of our
+model unitedly contribute to the improved performance of hate
+speech detection.
+G. Detection Examples and Error Analysis
+1) Detection Examples: One advantage of our model is its
+capability in capturing span-level features. In this section, we
+
+--- Context around line 657 ---
+speech detection.
+G. Detection Examples and Error Analysis
+1) Detection Examples: One advantage of our model is its
+capability in capturing span-level features. In this section, we
+provide four case studies to illustrate this capability of our
+model compared with the BERT-base-cased detection model.
+TABLE V shows the detection results. From the table, we
+
+--- Context around line 660 ---
+capability in capturing span-level features. In this section, we
+provide four case studies to illustrate this capability of our
+model compared with the BERT-base-cased detection model.
+TABLE V shows the detection results. From the table, we
+observe that our model can precisely detect these examples,
+but the BERT-based model wrongly predicts their labels.
+Although the first sentence has two negative words,
+
+--- Context around line 662 ---
+model compared with the BERT-base-cased detection model.
+TABLE V shows the detection results. From the table, we
+observe that our model can precisely detect these examples,
+but the BERT-based model wrongly predicts their labels.
+Although the first sentence has two negative words,
+“threats ” and “ lying ”, that express somewhat insulting emo-
+tions, the sentence is not an attack towards certain social
+
+--- Context around line 663 ---
+TABLE V shows the detection results. From the table, we
+observe that our model can precisely detect these examples,
+but the BERT-based model wrongly predicts their labels.
+Although the first sentence has two negative words,
+“threats ” and “ lying ”, that express somewhat insulting emo-
+tions, the sentence is not an attack towards certain social
+groups. Therefore, this sentence does not contain hate speech.
+
+--- Context around line 670 ---
+On the contrary, the second sentence, as an example of hate
+speech, does not contain any insulting words but involves a
+stereotype of immigrant children. Our model correctly predicts
+that it is hate speech, which demonstrates the effectiveness
+of our model. Similarly, the third and the fourth sentences
+both contain an abusive word, “ bitch ”. By considering the
+context of each sentence, only the fourth sentence expresses
+
+--- Context around line 672 ---
+stereotype of immigrant children. Our model correctly predicts
+that it is hate speech, which demonstrates the effectiveness
+of our model. Similarly, the third and the fourth sentences
+both contain an abusive word, “ bitch ”. By considering the
+context of each sentence, only the fourth sentence expresses
+hatred. For text containing the same insulting words, our
+model can also make correct predictions. This is because
+
+--- Context around line 676 ---
+context of each sentence, only the fourth sentence expresses
+hatred. For text containing the same insulting words, our
+model can also make correct predictions. This is because
+our model learns more contextual semantic information by
+dual contrastive learning, which helps effectively distinguish
+different kinds of samples, particularly hate speech containing
+insulting words.
+
+--- Context around line 677 ---
+hatred. For text containing the same insulting words, our
+model can also make correct predictions. This is because
+our model learns more contextual semantic information by
+dual contrastive learning, which helps effectively distinguish
+different kinds of samples, particularly hate speech containing
+insulting words.
+To further verify the effectiveness of our model, we visually
+
+--- Context around line 678 ---
+model can also make correct predictions. This is because
+our model learns more contextual semantic information by
+dual contrastive learning, which helps effectively distinguish
+different kinds of samples, particularly hate speech containing
+insulting words.
+To further verify the effectiveness of our model, we visually
+analyze the attention weights of the hidden layers of fine-tuned
+
+--- Context around line 681 ---
+different kinds of samples, particularly hate speech containing
+insulting words.
+To further verify the effectiveness of our model, we visually
+analyze the attention weights of the hidden layers of fine-tuned
+BERT encoder in the learned DCL model and the BERT-based
+model through two sentences. The result is shown in Fig. 5.
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 8
+
+--- Context around line 683 ---
+To further verify the effectiveness of our model, we visually
+analyze the attention weights of the hidden layers of fine-tuned
+BERT encoder in the learned DCL model and the BERT-based
+model through two sentences. The result is shown in Fig. 5.
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 8
+TABLE V
+EXAMPLES ON HATE SPEECH DETECTION OF OUR MODEL AND BERT.
+
+--- Context around line 684 ---
+analyze the attention weights of the hidden layers of fine-tuned
+BERT encoder in the learned DCL model and the BERT-based
+model through two sentences. The result is shown in Fig. 5.
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 8
+TABLE V
+EXAMPLES ON HATE SPEECH DETECTION OF OUR MODEL AND BERT.
+Index Sentence Label BERT DCL
+
+--- Context around line 687 ---
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 8
+TABLE V
+EXAMPLES ON HATE SPEECH DETECTION OF OUR MODEL AND BERT.
+Index Sentence Label BERT DCL
+1Like he ever kept out any threats. He’s lying as usual.
+#BuildThatWallnon-hate hate non-hate
+2stop w ’we have to worry about the children’ No we do not-
+
+--- Context around line 699 ---
+hoe know I can’t have another onehate non-hate hate
+TABLE VI
+MISCLASSIFIED INSTANCES ON HATE SPEECH DETECTION OF OUR MODEL AND BERT.
+Index Sentence Label BERT DCL
+1>Harasses women and calls them bitch and crabby >They
+block him >Plays the victimnon-hate hate hate
+2Bitch how is you gonna claim to be a "real" nigga, yet still on
+
+--- Context around line 712 ---
+Fig. 5. Attention weights for each word of two sentences in the hidden layer
+of fine-tuned BERT encoder. For each sentence, the above one is trained with
+DCL, and the below one is trained with the BERT-based model. The depth
+of the background color indicates the weight of each word.
+For each sentence, the above one is trained with DCL and the
+below one is trained with the BERT-based model.
+In Fig. 5, the depth of red indicates the attention weight of
+
+--- Context around line 715 ---
+of the background color indicates the weight of each word.
+For each sentence, the above one is trained with DCL and the
+below one is trained with the BERT-based model.
+In Fig. 5, the depth of red indicates the attention weight of
+the word. The darker the color, the more important the word
+is to the hate speech detection of the entire sentence. In Exp.
+1, the word set {Go, home, can’t, afford} gets more attention
+
+--- Context around line 723 ---
+love, you} has a higher attention weight in sentences while
+the insulting words, such as ” bitch ” and ” asshole ”, have a
+lower weight. The above sentences show that the model can
+better discover the key information of the context, which has a
+certain guiding significance for the hate speech detection task.
+2) Error Analysis: To gain more insights into the perfor-
+mance of our model, a manual inspection has been performed
+
+--- Context around line 727 ---
+certain guiding significance for the hate speech detection task.
+2) Error Analysis: To gain more insights into the perfor-
+mance of our model, a manual inspection has been performed
+on a set of misclassified sentences. Two main types of error
+have been identified:
+Type I error refers to the sentences annotated as non-hate ,
+but classified as hate by the detection models. Type I error is
+
+--- Context around line 731 ---
+have been identified:
+Type I error refers to the sentences annotated as non-hate ,
+but classified as hate by the detection models. Type I error is
+usually caused by colloquial and informal statements in tweets.We enumerate two cases in TABLE VI as examples: The first
+case describes the scene in an informal flowchart-like fashion,
+while the second case contains many colloquial languages,
+such as ”gonna”, ”yet still” , which is not conducive to
+
+--- Context around line 736 ---
+while the second case contains many colloquial languages,
+such as ”gonna”, ”yet still” , which is not conducive to
+the model’s understanding of text semantics. Therefore, both
+models wrongly predicted their labels.
+Type II error refers to the sentence labeled as hate, but
+classified as non-hate by the detection models. Type II errors
+usually occur when there is a lack of necessary background
+
+--- Context around line 737 ---
+such as ”gonna”, ”yet still” , which is not conducive to
+the model’s understanding of text semantics. Therefore, both
+models wrongly predicted their labels.
+Type II error refers to the sentence labeled as hate, but
+classified as non-hate by the detection models. Type II errors
+usually occur when there is a lack of necessary background
+knowledge. For the third case in TABLE VI, the meaning of
+
+--- Context around line 739 ---
+models wrongly predicted their labels.
+Type II error refers to the sentence labeled as hate, but
+classified as non-hate by the detection models. Type II errors
+usually occur when there is a lack of necessary background
+knowledge. For the third case in TABLE VI, the meaning of
+this sentence is embodied by the information of hashtags, such
+as "#buildthewall ", which reflect the hatred of opposition to
+
+--- Context around line 748 ---
+speech detection.
+V. C ONCLUSION
+In this work, we propose a dual contrastive learning frame-
+work to tackle the problem of hate speech detection. Our
+framework integrates both self-supervised contrastive learn-
+ing and supervised contrastive learning to capture high-level
+semantic information and complex language usage pattern in
+
+--- Context around line 750 ---
+In this work, we propose a dual contrastive learning frame-
+work to tackle the problem of hate speech detection. Our
+framework integrates both self-supervised contrastive learn-
+ing and supervised contrastive learning to capture high-level
+semantic information and complex language usage pattern in
+hate speech expressions. Furthermore, we integrate focal loss
+with dual contrastive learning to alleviate data imbalance for
+
+--- Context around line 751 ---
+work to tackle the problem of hate speech detection. Our
+framework integrates both self-supervised contrastive learn-
+ing and supervised contrastive learning to capture high-level
+semantic information and complex language usage pattern in
+hate speech expressions. Furthermore, we integrate focal loss
+with dual contrastive learning to alleviate data imbalance for
+fine-grained hate speech detection. Experimental results on the
+
+--- Context around line 754 ---
+semantic information and complex language usage pattern in
+hate speech expressions. Furthermore, we integrate focal loss
+with dual contrastive learning to alleviate data imbalance for
+fine-grained hate speech detection. Experimental results on the
+SemEval-2019 Task-5 and Davidson dataset demonstrate the
+effectiveness of our model.
+In the future, we will explore the following directions: (1)
+
+--- Context around line 757 ---
+fine-grained hate speech detection. Experimental results on the
+SemEval-2019 Task-5 and Davidson dataset demonstrate the
+effectiveness of our model.
+In the future, we will explore the following directions: (1)
+The analysis of Type I error shows that noises in text affect
+the model’s performance. Therefore, we will further explore
+the impact of insulting words in informal contexts on hate
+
+--- Context around line 760 ---
+In the future, we will explore the following directions: (1)
+The analysis of Type I error shows that noises in text affect
+the model’s performance. Therefore, we will further explore
+the impact of insulting words in informal contexts on hate
+speech detection. (2) The analysis of Type II error certifies
+the necessity of external knowledge in hate speech detection.
+We will explore how to introduce useful external knowledge
+
+--- Context around line 792 ---
+https://doi.org/10.18653/v1/w16-3638
+[5] J. Qian, M. ElSherief, E. M. Belding, and W. Y . Wang, “Leveraging
+intra-user and inter-user representation learning for automated hate
+speech detection,” CoRR , vol. abs/1804.03124, 2018. [Online].
+Available: http://arxiv.org/abs/1804.03124
+[6] R. E. Wright, “Logistic regression.” 1995.
+[7] T. Joachims, “Making large-scale svm learning practical,” Technical
+
+--- Context around line 796 ---
+Available: http://arxiv.org/abs/1804.03124
+[6] R. E. Wright, “Logistic regression.” 1995.
+[7] T. Joachims, “Making large-scale svm learning practical,” Technical
+report, Tech. Rep., 1998.
+[8] G. Mou, P. Ye, and K. Lee, “SWE2: subword enriched and
+significant word emphasized framework for hate speech detection,” in
+CIKM ’20: The 29th ACM International Conference on Information
+
+--- Context around line 799 ---
+report, Tech. Rep., 1998.
+[8] G. Mou, P. Ye, and K. Lee, “SWE2: subword enriched and
+significant word emphasized framework for hate speech detection,” in
+CIKM ’20: The 29th ACM International Conference on Information
+and Knowledge Management, Virtual Event, Ireland, October 19-23,
+2020 , M. d’Aquin, S. Dietze, C. Hauff, E. Curry, and P. Cudré-
+Mauroux, Eds. ACM, 2020, pp. 1145–1154. [Online]. Available:
+
+--- Context around line 816 ---
+[Online]. Available: https://doi.org/10.18653/v1/2020.acl-main.110
+[11] A. Radford, J. Wu, R. Child, D. Luan, D. Amodei, I. Sutskever et al. ,
+“Language models are unsupervised multitask learners,” OpenAI blog ,
+vol. 1, no. 8, p. 9, 2019.
+[12] R. Cao and R. K. Lee, “Hategan: Adversarial generative-based
+data augmentation for hate speech detection,” in Proceedings of
+the 28th International Conference on Computational Linguistics,
+
+--- Context around line 825 ---
+Computational Linguistics, 2020, pp. 6327–6338. [Online]. Available:
+https://doi.org/10.18653/v1/2020.coling-main.557
+[13] A. Anand, “Contrastive self-supervised learning,” 2020, https://
+ankeshanand.com/blog/2020/01/26/contrative-self-supervised-learning.
+html.
+[14] M. U. Gutmann and A. Hyvärinen, “Noise-contrastive estimation of
+unnormalized statistical models, with applications to natural image
+
+--- Context around line 826 ---
+https://doi.org/10.18653/v1/2020.coling-main.557
+[13] A. Anand, “Contrastive self-supervised learning,” 2020, https://
+ankeshanand.com/blog/2020/01/26/contrative-self-supervised-learning.
+html.
+[14] M. U. Gutmann and A. Hyvärinen, “Noise-contrastive estimation of
+unnormalized statistical models, with applications to natural image
+statistics.” Journal of Machine Learning Research , vol. 13, no. 2, 2012.
+
+--- Context around line 828 ---
+ankeshanand.com/blog/2020/01/26/contrative-self-supervised-learning.
+html.
+[14] M. U. Gutmann and A. Hyvärinen, “Noise-contrastive estimation of
+unnormalized statistical models, with applications to natural image
+statistics.” Journal of Machine Learning Research , vol. 13, no. 2, 2012.
+[15] G. Nan, R. Qiao, Y . Xiao, J. Liu, S. Leng, H. Zhang, and W. Lu,
+“Interventional video grounding with dual contrastive learning,” in
+
+--- Context around line 829 ---
+html.
+[14] M. U. Gutmann and A. Hyvärinen, “Noise-contrastive estimation of
+unnormalized statistical models, with applications to natural image
+statistics.” Journal of Machine Learning Research , vol. 13, no. 2, 2012.
+[15] G. Nan, R. Qiao, Y . Xiao, J. Liu, S. Leng, H. Zhang, and W. Lu,
+“Interventional video grounding with dual contrastive learning,” in
+Proceedings of the IEEE/CVF Conference on Computer Vision and
+
+--- Context around line 830 ---
+[14] M. U. Gutmann and A. Hyvärinen, “Noise-contrastive estimation of
+unnormalized statistical models, with applications to natural image
+statistics.” Journal of Machine Learning Research , vol. 13, no. 2, 2012.
+[15] G. Nan, R. Qiao, Y . Xiao, J. Liu, S. Leng, H. Zhang, and W. Lu,
+“Interventional video grounding with dual contrastive learning,” in
+Proceedings of the IEEE/CVF Conference on Computer Vision and
+Pattern Recognition (CVPR) , June 2021, pp. 2765–2775.
+
+--- Context around line 832 ---
+statistics.” Journal of Machine Learning Research , vol. 13, no. 2, 2012.
+[15] G. Nan, R. Qiao, Y . Xiao, J. Liu, S. Leng, H. Zhang, and W. Lu,
+“Interventional video grounding with dual contrastive learning,” in
+Proceedings of the IEEE/CVF Conference on Computer Vision and
+Pattern Recognition (CVPR) , June 2021, pp. 2765–2775.
+[16] J. Han, M. Shoeiby, L. Petersson, and M. A. Armin, “Dual contrastive
+learning for unsupervised image-to-image translation,” in Proceedings of
+
+--- Context around line 835 ---
+Proceedings of the IEEE/CVF Conference on Computer Vision and
+Pattern Recognition (CVPR) , June 2021, pp. 2765–2775.
+[16] J. Han, M. Shoeiby, L. Petersson, and M. A. Armin, “Dual contrastive
+learning for unsupervised image-to-image translation,” in Proceedings of
+the IEEE/CVF Conference on Computer Vision and Pattern Recognition
+(CVPR) Workshops , June 2021, pp. 746–755.[17] Y . Li, P. Hu, Z. Liu, D. Peng, J. T. Zhou, and X. Peng, “Contrastive
+clustering,” in 2021 AAAI Conference on Artificial Intelligence (AAAI) ,
+
+--- Context around line 836 ---
+Pattern Recognition (CVPR) , June 2021, pp. 2765–2775.
+[16] J. Han, M. Shoeiby, L. Petersson, and M. A. Armin, “Dual contrastive
+learning for unsupervised image-to-image translation,” in Proceedings of
+the IEEE/CVF Conference on Computer Vision and Pattern Recognition
+(CVPR) Workshops , June 2021, pp. 746–755.[17] Y . Li, P. Hu, Z. Liu, D. Peng, J. T. Zhou, and X. Peng, “Contrastive
+clustering,” in 2021 AAAI Conference on Artificial Intelligence (AAAI) ,
+2021.
+
+--- Context around line 838 ---
+learning for unsupervised image-to-image translation,” in Proceedings of
+the IEEE/CVF Conference on Computer Vision and Pattern Recognition
+(CVPR) Workshops , June 2021, pp. 746–755.[17] Y . Li, P. Hu, Z. Liu, D. Peng, J. T. Zhou, and X. Peng, “Contrastive
+clustering,” in 2021 AAAI Conference on Artificial Intelligence (AAAI) ,
+2021.
+[18] T. Gao, X. Yao, and D. Chen, “SimCSE: Simple contrastive learning
+of sentence embeddings,” in Empirical Methods in Natural Language
+
+--- Context around line 841 ---
+clustering,” in 2021 AAAI Conference on Artificial Intelligence (AAAI) ,
+2021.
+[18] T. Gao, X. Yao, and D. Chen, “SimCSE: Simple contrastive learning
+of sentence embeddings,” in Empirical Methods in Natural Language
+Processing (EMNLP) , 2021.
+[19] B. Gunel, J. Du, A. Conneau, and V . Stoyanov, “Supervised contrastive
+learning for pre-trained language model fine-tuning,” in International
+
+--- Context around line 842 ---
+2021.
+[18] T. Gao, X. Yao, and D. Chen, “SimCSE: Simple contrastive learning
+of sentence embeddings,” in Empirical Methods in Natural Language
+Processing (EMNLP) , 2021.
+[19] B. Gunel, J. Du, A. Conneau, and V . Stoyanov, “Supervised contrastive
+learning for pre-trained language model fine-tuning,” in International
+Conference on Learning Representations , 2020.
+
+--- Context around line 844 ---
+of sentence embeddings,” in Empirical Methods in Natural Language
+Processing (EMNLP) , 2021.
+[19] B. Gunel, J. Du, A. Conneau, and V . Stoyanov, “Supervised contrastive
+learning for pre-trained language model fine-tuning,” in International
+Conference on Learning Representations , 2020.
+[20] Y . Moukafih, A. Ghanem, K. Abidi, N. Sbihi, M. Ghogho, and
+K. Smaïli, “SimSCL: A Simple fully-Supervised Contrastive Learning
+
+--- Context around line 845 ---
+Processing (EMNLP) , 2021.
+[19] B. Gunel, J. Du, A. Conneau, and V . Stoyanov, “Supervised contrastive
+learning for pre-trained language model fine-tuning,” in International
+Conference on Learning Representations , 2020.
+[20] Y . Moukafih, A. Ghanem, K. Abidi, N. Sbihi, M. Ghogho, and
+K. Smaïli, “SimSCL: A Simple fully-Supervised Contrastive Learning
+Framework for Text Representation,” in AJCAI 2021 - 34th Australasian
+
+--- Context around line 846 ---
+[19] B. Gunel, J. Du, A. Conneau, and V . Stoyanov, “Supervised contrastive
+learning for pre-trained language model fine-tuning,” in International
+Conference on Learning Representations , 2020.
+[20] Y . Moukafih, A. Ghanem, K. Abidi, N. Sbihi, M. Ghogho, and
+K. Smaïli, “SimSCL: A Simple fully-Supervised Contrastive Learning
+Framework for Text Representation,” in AJCAI 2021 - 34th Australasian
+Joint Conference on Artificial Intelligence , Sydney, Australia, Feb.
+
+--- Context around line 848 ---
+Conference on Learning Representations , 2020.
+[20] Y . Moukafih, A. Ghanem, K. Abidi, N. Sbihi, M. Ghogho, and
+K. Smaïli, “SimSCL: A Simple fully-Supervised Contrastive Learning
+Framework for Text Representation,” in AJCAI 2021 - 34th Australasian
+Joint Conference on Artificial Intelligence , Sydney, Australia, Feb.
+2022. [Online]. Available: https://hal.archives-ouvertes.fr/hal-03367972
+[21] T.-Y . Lin, P. Goyal, R. Girshick, K. He, and P. Dollár, “Focal loss
+
+--- Context around line 849 ---
+[20] Y . Moukafih, A. Ghanem, K. Abidi, N. Sbihi, M. Ghogho, and
+K. Smaïli, “SimSCL: A Simple fully-Supervised Contrastive Learning
+Framework for Text Representation,” in AJCAI 2021 - 34th Australasian
+Joint Conference on Artificial Intelligence , Sydney, Australia, Feb.
+2022. [Online]. Available: https://hal.archives-ouvertes.fr/hal-03367972
+[21] T.-Y . Lin, P. Goyal, R. Girshick, K. He, and P. Dollár, “Focal loss
+for dense object detection,” in Proceedings of the IEEE international
+
+--- Context around line 876 ---
+pp. 14–17.
+[27] Y . Ding, X. Zhou, and X. Zhang, “Ynu_dyx at semeval-2019 task 5: A
+stacked bigru model based on capsule network in detection of hate,” in
+Proceedings of the 13th International Workshop on Semantic Evaluation ,
+2019, pp. 535–539.
+[28] M. Benballa, S. Collet, and R. Picot-Clemente, “Saagie at semeval-2019
+task 5: From universal text embeddings and classical features to domain-
+
+--- Context around line 890 ---
+7158–7166.
+[30] L. van der Maaten and G. Hinton, “Visualizing data using t-sne,” Journal
+of Machine Learning Research , vol. 9, pp. 2579–2605, 2008.
+[31] N. Srivastava, G. E. Hinton, A. Krizhevsky, I. Sutskever, and
+R. Salakhutdinov, “Dropout: a simple way to prevent neural networks
+from overfitting,” J. Mach. Learn. Res. , vol. 15, no. 1, pp. 1929–1958,
+2014. [Online]. Available: http://dl.acm.org/citation.cfm?id=2670313
+
+--- Context around line 900 ---
+Web Science , 2018, pp. 33–36.
+[33] G. H. Laurens van der Maaten, “Visualizing data using t-sne,” Journal
+of Machine Learning Research , pp. 2579–2605, 2008.
+[34] I. Loshchilov and F. Hutter, “Fixing weight decay regularization
+in adam,” CoRR , vol. abs/1711.05101, 2017. [Online]. Available:
+http://arxiv.org/abs/1711.05101
+[35] W. V . Gansbeke, S. Vandenhende, S. Georgoulis, M. Proesmans, and
+
+--- Context around line 905 ---
+http://arxiv.org/abs/1711.05101
+[35] W. V . Gansbeke, S. Vandenhende, S. Georgoulis, M. Proesmans, and
+L. V . Gool, “SCAN: learning to classify images without labels,” in
+Computer Vision - ECCV 2020 - 16th European Conference, Glasgow,
+UK, August 23-28, 2020, Proceedings, Part X , ser. Lecture Notes in
+Computer Science, A. Vedaldi, H. Bischof, T. Brox, and J. Frahm,
+Eds., vol. 12355. Springer, 2020, pp. 268–285. [Online]. Available:
+
+--- Context around line 912 ---
+https://doi.org/10.1007/978-3-030-58607-2_16
+[36] Y . Li, M. Yang, D. Peng, T. Li, J. Huang, and X. Peng,
+“Twin contrastive learning for online clustering,” Int. J. Comput.
+Vis., vol. 130, no. 9, pp. 2205–2221, 2022. [Online]. Available:
+https://doi.org/10.1007/s11263-022-01639-z
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 10
+[37] Y . Lin, Y . Gou, X. Liu, J. Bai, J. Lv, and X. Peng, “Dual contrastive
+
+--- Context around line 916 ---
+https://doi.org/10.1007/s11263-022-01639-z
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 10
+[37] Y . Lin, Y . Gou, X. Liu, J. Bai, J. Lv, and X. Peng, “Dual contrastive
+prediction for incomplete multi-view representation learning,” IEEE
+Trans. Pattern Anal. Mach. Intell. , vol. 45, no. 4, pp. 4447–4461, 2023.
+[Online]. Available: https://doi.org/10.1109/TPAMI.2022.3197238
+[38] P. Hu, H. Zhu, J. Lin, D. Peng, Y . Zhao, and X. Peng, “Unsupervised
+
+--- Context around line 917 ---
+JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 10
+[37] Y . Lin, Y . Gou, X. Liu, J. Bai, J. Lv, and X. Peng, “Dual contrastive
+prediction for incomplete multi-view representation learning,” IEEE
+Trans. Pattern Anal. Mach. Intell. , vol. 45, no. 4, pp. 4447–4461, 2023.
+[Online]. Available: https://doi.org/10.1109/TPAMI.2022.3197238
+[38] P. Hu, H. Zhu, J. Lin, D. Peng, Y . Zhao, and X. Peng, “Unsupervised
+contrastive cross-modal hashing,” IEEE Trans. Pattern Anal. Mach.
+
+--- Context around line 921 ---
+[Online]. Available: https://doi.org/10.1109/TPAMI.2022.3197238
+[38] P. Hu, H. Zhu, J. Lin, D. Peng, Y . Zhao, and X. Peng, “Unsupervised
+contrastive cross-modal hashing,” IEEE Trans. Pattern Anal. Mach.
+Intell. , vol. 45, no. 3, pp. 3877–3889, 2023. [Online]. Available:
+https://doi.org/10.1109/TPAMI.2022.3177356
+[39] M. Yang, Y . Li, P. Hu, J. Bai, J. Lv, and X. Peng, “Robust multi-view
+clustering with incomplete information,” IEEE Trans. Pattern Anal.
+
+--- Context around line 929 ---
+https://doi.org/10.1109/TPAMI.2022.3155499
+[40] Y . Li, P. Hu, J. Z. Liu, D. Peng, J. T. Zhou, and X. Peng,
+“Contrastive clustering,” in Thirty-Fifth AAAI Conference on Artificial
+Intelligence, AAAI 2021, Thirty-Third Conference on Innovative
+Applications of Artificial Intelligence, IAAI 2021, The Eleventh
+Symposium on Educational Advances in Artificial Intelligence, EAAI
+2021, Virtual Event, February 2-9, 2021 . AAAI Press, 2021, pp.
+
+--- Context around line 946 ---
+[43] P. Fortuna, M. Dominguez, L. Wanner, and Z. Talat, “Directions for
+NLP practices applied to online hate speech detection,” in Proceedings
+of the 2022 Conference on Empirical Methods in Natural Language
+Processing . Abu Dhabi, United Arab Emirates: Association for
+Computational Linguistics, Dec. 2022, pp. 11 794–11 805. [Online].
+Available: https://aclanthology.org/2022.emnlp-main.809
+[44] I. Sen, M. Samory, C. Wagner, and I. Augenstein, “Counterfactually
+
+--- Context around line 960 ---
+X. Li, P. Fung, L. Mathias, A. Celikyilmaz, and M. Diab, “ToKen:
+Task decomposition and knowledge infusion for few-shot hate speech
+detection,” in Proceedings of the 2022 Conference on Empirical Methods
+in Natural Language Processing . Abu Dhabi, United Arab Emirates:
+Association for Computational Linguistics, Dec. 2022, pp. 2109–2120.
+[Online]. Available: https://aclanthology.org/2022.emnlp-main.136
+[46] B. Ross, M. Rist, G. Carbonell, B. Cabrera, N. Kurowsky, and M. Wo-
+
+--- Context around line 972 ---
+M. D. Choudhury, and D. Yang, “Latent hatred: A benchmark for
+understanding implicit hate speech,” in Proceedings of the 2021
+Conference on Empirical Methods in Natural Language Processing,
+EMNLP 2021, Virtual Event / Punta Cana, Dominican Republic, 7-11
+November, 2021 , M. Moens, X. Huang, L. Specia, and S. W. Yih,
+Eds. Association for Computational Linguistics, 2021, pp. 345–363.
+[Online]. Available: https://doi.org/10.18653/v1/2021.emnlp-main.29
+
