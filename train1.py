@@ -1,8 +1,11 @@
+import os
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
-from transformers import BertModel, BertTokenizer, AdamW, get_linear_schedule_with_warmup
+from transformers import BertModel, BertTokenizer, get_linear_schedule_with_warmup
+from torch.optim import AdamW
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
@@ -12,7 +15,6 @@ import warnings
 from typing import List, Dict, Tuple, Optional
 import logging
 from tqdm import tqdm
-import os
 
 warnings.filterwarnings('ignore')
 logging.basicConfig(level=logging.INFO)
@@ -65,6 +67,8 @@ class HateSpeechDataProcessor:
         try:
             df = pd.read_csv(file_path)
             df['text'] = df['text'].apply(self.clean_text)
+            # 处理标签列的缺失值
+            df = df.dropna(subset=['HS'])
             return df
         except Exception as e:
             logger.error(f"数据加载失败: {e}")
