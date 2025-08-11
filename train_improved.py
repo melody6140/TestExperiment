@@ -515,7 +515,8 @@ def ablation_study(train_texts, train_labels, val_texts, val_labels, tokenizer, 
         model.train()
 
         for epoch in range(5):
-            for batch in train_loader:
+            progress_bar = tqdm(train_loader, desc=f'{name} Epoch {epoch + 1}/5')
+            for batch in progress_bar:
                 optimizer.zero_grad()
 
                 input_ids = batch['input_ids'].to(device)
