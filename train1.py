@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 import random
 import re
 import warnings
-from typing import List, Dict, Tuple, Optional
+from typing import List, Tuple
 import logging
 from tqdm import tqdm
 
@@ -123,40 +123,99 @@ class HateSpeechDataset(Dataset):
 
 
 class HateKeywordIdentifier:
-    """仇恨关键词识别模块"""
+    """仇恨关键词识别模块 - 增强版"""
 
     def __init__(self, hate_keywords: set):
         self.hate_keywords = hate_keywords
+        # 添加上下文敏感的重要性评估
+        self.context_patterns = {
+            'target_groups': {'women', 'immigrants', 'muslims', 'jews', 'blacks', 'gays', 'people'},
+            'intensity_words': {'very', 'extremely', 'totally', 'completely', 'absolutely'},
+            'negation_words': {'not', 'never', 'no', 'none', 'nothing'}
+        }
 
     def identify_importance(self, text: str, tokenizer) -> List[float]:
-        """识别文本中每个token的仇恨重要性分数"""
+        """识别文本中每个token的仇恨重要性分数 - 增强版"""
         tokens = tokenizer.tokenize(text.lower())
+        words = text.lower().split()  # 用于上下文分析
         importance_scores = []
 
-        for token in tokens:
+        for i, token in enumerate(tokens):
             # 移除BERT的特殊标记前缀
             clean_token = token.replace('##', '')
 
-            # 计算仇恨重要性分数
-            base_score = 0.0
+            # 基础仇恨词典得分
+            base_score = self._get_hate_dictionary_score(clean_token)
 
-            # 词典匹配得分
-            if clean_token in self.hate_keywords:
-                base_score += 0.8
+            # 上下文增强得分
+            context_score = self._get_context_enhanced_score(clean_token, words, i)
 
-            # 部分匹配得分
-            for hate_word in self.hate_keywords:
-                if clean_token in hate_word or hate_word in clean_token:
-                    base_score += 0.3
-                    break
+            # 位置权重（句首句尾的重要词汇权重更高）
+            position_weight = self._get_position_weight(i, len(tokens))
 
-            # 长度惩罚（避免短词获得过高分数）
-            if len(clean_token) <= 2:
-                base_score *= 0.5
-
-            importance_scores.append(min(base_score, 1.0))
+            # 综合得分
+            final_score = min((base_score + context_score) * position_weight, 1.0)
+            importance_scores.append(final_score)
 
         return importance_scores
+
+    def _get_hate_dictionary_score(self, token: str) -> float:
+        """基于仇恨词典的基础得分"""
+        score = 0.0
+
+        # 精确匹配
+        if token in self.hate_keywords:
+            score += 0.8
+
+        # 部分匹配（更精确的匹配策略）
+        for hate_word in self.hate_keywords:
+            if len(token) > 3:  # 避免短词误匹配
+                if token in hate_word and len(token) >= len(hate_word) * 0.6:
+                    score += 0.4
+                elif hate_word in token and len(hate_word) >= len(token) * 0.6:
+                    score += 0.4
+
+        return min(score, 0.8)
+
+    def _get_context_enhanced_score(self, token: str, words: List[str], token_idx: int) -> float:
+        """基于上下文的增强得分"""
+        context_score = 0.0
+
+        # 寻找token在words中的大致位置
+        word_idx = min(token_idx // 2, len(words) - 1)  # 粗略映射
+
+        # 检查周围上下文（前后2个词）
+        context_window = []
+        for j in range(max(0, word_idx - 2), min(len(words), word_idx + 3)):
+            if j < len(words):
+                context_window.append(words[j])
+
+        # 目标群体上下文增强
+        if any(group in context_window for group in self.context_patterns['target_groups']):
+            if token in self.hate_keywords:
+                context_score += 0.3  # 针对特定群体的仇恨词汇权重更高
+
+        # 强度词增强
+        if any(intensity in context_window for intensity in self.context_patterns['intensity_words']):
+            if token in self.hate_keywords:
+                context_score += 0.2
+
+        # 否定词降权
+        if any(neg in context_window for neg in self.context_patterns['negation_words']):
+            context_score -= 0.3  # 否定语境下降低仇恨词权重
+
+        return max(context_score, 0.0)
+
+    def _get_position_weight(self, position: int, total_length: int) -> float:
+        """位置权重：句首句尾的重要词汇权重更高"""
+        if total_length <= 3:
+            return 1.0
+
+        # 句首和句尾权重较高
+        if position < total_length * 0.2 or position > total_length * 0.8:
+            return 1.1
+
+        return 1.0
 
 
 class SelectiveAugmenter:
@@ -178,30 +237,68 @@ class SelectiveAugmenter:
         }
 
     def selective_perturbation(self, text: str, preserve_threshold: float = 0.3) -> str:
-        """选择性扰动：保护重要词汇，扰动非重要词汇"""
+        """选择性扰动：保护重要词汇，扰动非重要词汇 - 增强版"""
         # 获取重要性分数
         importance_scores = self.keyword_identifier.identify_importance(text, self.tokenizer)
         tokens = text.split()
 
-        # 确保长度一致
+        # 处理tokenizer和word-level的长度不匹配问题
         if len(importance_scores) != len(tokens):
-            # 如果长度不匹配，使用简单策略
-            importance_scores = [0.5] * len(tokens)
+            # 使用滑动窗口平均来对齐分数
+            importance_scores = self._align_importance_scores(importance_scores, len(tokens))
 
         perturbed_tokens = []
         for i, (token, importance) in enumerate(zip(tokens, importance_scores)):
             if importance > preserve_threshold:
-                # 保护重要词汇
+                # 保护重要词汇（仇恨关键词等）
                 perturbed_tokens.append(token)
             else:
-                # 扰动非重要词汇
-                if token.lower() in self.synonyms and random.random() < 0.3:
-                    synonym = random.choice(self.synonyms[token.lower()])
-                    perturbed_tokens.append(synonym)
-                else:
-                    perturbed_tokens.append(token)
+                # 对非重要词汇进行多样化扰动
+                perturbed_token = self._apply_perturbation(token, importance)
+                perturbed_tokens.append(perturbed_token)
 
         return ' '.join(perturbed_tokens)
+
+    def _align_importance_scores(self, token_scores: List[float], word_count: int) -> List[float]:
+        """对齐token级分数到word级分数"""
+        if len(token_scores) == word_count:
+            return token_scores
+
+        # 使用平均池化来对齐
+        aligned_scores = []
+        tokens_per_word = len(token_scores) / word_count
+
+        for i in range(word_count):
+            start_idx = int(i * tokens_per_word)
+            end_idx = int((i + 1) * tokens_per_word)
+            word_score = sum(token_scores[start_idx:end_idx]) / max(1, end_idx - start_idx)
+            aligned_scores.append(word_score)
+
+        return aligned_scores
+
+    def _apply_perturbation(self, token: str, importance: float) -> str:
+        """对token应用多样化扰动策略"""
+        # 根据重要性分数调整扰动概率
+        perturbation_prob = 0.4 * (1 - importance)  # 重要性越低，扰动概率越高
+
+        if random.random() > perturbation_prob:
+            return token
+
+        # 多种扰动策略
+        strategies = ['synonym', 'case_change', 'char_repeat']
+        strategy = random.choice(strategies)
+
+        if strategy == 'synonym' and token.lower() in self.synonyms:
+            return random.choice(self.synonyms[token.lower()])
+        elif strategy == 'case_change' and len(token) > 2:
+            # 随机改变大小写
+            return ''.join(c.upper() if random.random() < 0.3 else c.lower() for c in token)
+        elif strategy == 'char_repeat' and len(token) > 1:
+            # 随机重复字符（模拟网络语言）
+            idx = random.randint(0, len(token) - 1)
+            return token[:idx] + token[idx] + token[idx:]
+
+        return token
 
     def generate_augmented_data(self, texts: List[str], labels: List[int],
                                 num_augmentations: int = 2) -> Tuple[List[str], List[int]]:
@@ -224,7 +321,7 @@ class SelectiveAugmenter:
 
 
 class DualContrastiveLearner(nn.Module):
-    """双重对比学习模块"""
+    """双重对比学习模块 - 增强版"""
 
     def __init__(self, hidden_size=768, temperature=0.1):
         super().__init__()
@@ -236,8 +333,8 @@ class DualContrastiveLearner(nn.Module):
             nn.Linear(hidden_size, 256)
         )
 
-    def forward(self, embeddings, labels=None, augmented_embeddings=None):
-        """计算双重对比学习损失"""
+    def forward(self, embeddings, labels=None, augmented_embeddings=None, importance_weights=None):
+        """计算双重对比学习损失 - 支持token级加权"""
         projected_embeddings = self.projection(embeddings)
         projected_embeddings = F.normalize(projected_embeddings, dim=-1)
 
@@ -250,20 +347,22 @@ class DualContrastiveLearner(nn.Module):
             augmented_projected = F.normalize(augmented_projected, dim=-1)
 
             self_supervised_loss = self._compute_self_supervised_loss(
-                projected_embeddings, augmented_projected
+                projected_embeddings, augmented_projected, importance_weights
             )
             total_loss += self_supervised_loss
             loss_count += 1
 
         # 监督对比学习损失
         if labels is not None:
-            supervised_loss = self._compute_supervised_loss(projected_embeddings, labels)
+            supervised_loss = self._compute_supervised_loss(
+                projected_embeddings, labels, importance_weights
+            )
             total_loss += supervised_loss
             loss_count += 1
 
         return total_loss / max(loss_count, 1)
 
-    def _compute_self_supervised_loss(self, embeddings, augmented_embeddings):
+    def _compute_self_supervised_loss(self, embeddings, augmented_embeddings, importance_weights=None):
         """计算自监督对比学习损失"""
         batch_size = embeddings.size(0)
 
@@ -274,17 +373,26 @@ class DualContrastiveLearner(nn.Module):
         all_embeddings = torch.cat([embeddings, augmented_embeddings], dim=0)
         similarity_matrix = torch.matmul(embeddings, all_embeddings.T) / self.temperature
 
-        # 创建掩码，排除自身
-        mask = torch.eye(batch_size).bool().to(embeddings.device)
+        # 创建掩码，排除自身（注意：相似度矩阵是 batch_size x (2*batch_size)）
+        # 我们需要排除的是与自身的相似度，即前batch_size个位置
+        mask = torch.zeros(batch_size, 2 * batch_size).bool().to(embeddings.device)
+        mask[torch.arange(batch_size), torch.arange(batch_size)] = True
         similarity_matrix = similarity_matrix.masked_fill(mask, float('-inf'))
 
         # 计算对比损失
         exp_sim = torch.exp(similarity_matrix)
         log_prob = pos_similarity - torch.log(torch.sum(exp_sim, dim=-1))
 
+        # 应用重要性权重
+        if importance_weights is not None:
+            # 确保权重维度匹配
+            if importance_weights.size(0) == batch_size:
+                weighted_loss = -log_prob * importance_weights
+                return weighted_loss.mean()
+
         return -log_prob.mean()
 
-    def _compute_supervised_loss(self, embeddings, labels):
+    def _compute_supervised_loss(self, embeddings, labels, importance_weights=None):
         """计算监督对比学习损失"""
         batch_size = embeddings.size(0)
         labels = labels.contiguous().view(-1, 1)
@@ -309,6 +417,13 @@ class DualContrastiveLearner(nn.Module):
         log_prob = similarity_matrix - torch.log(exp_logits.sum(1, keepdim=True))
 
         mean_log_prob_pos = (mask * log_prob).sum(1) / mask.sum(1).clamp(min=1)
+
+        # 应用重要性权重
+        if importance_weights is not None:
+            # 确保权重维度匹配
+            if importance_weights.size(0) == batch_size:
+                weighted_loss = -mean_log_prob_pos * importance_weights
+                return weighted_loss.mean()
 
         return -mean_log_prob_pos.mean()
 
@@ -434,20 +549,16 @@ class StagedTrainingPipeline:
 
         return train_loader, val_loader
 
-    def stage1_basic_training(self, train_loader, val_loader, epochs=5):
-        """阶段1：基础分类器训练"""
-        logger.info("=== 阶段1：基础分类器预训练 ===")
+    def stage1_warmup_training(self, train_loader, val_loader, epochs=8):
+        """阶段1：预热训练 - 分类器和对比学习联合训练"""
+        logger.info("=== 阶段1：预热训练（分类+对比学习） ===")
 
-        # 冻结对比学习模块
-        for param in self.model.contrastive_learner.parameters():
-            param.requires_grad = False
-
-        optimizer = AdamW(filter(lambda p: p.requires_grad, self.model.parameters()),
-                          lr=2e-5, eps=1e-8)
+        # 使用较小的学习率进行预热
+        optimizer = AdamW(self.model.parameters(), lr=1e-5, eps=1e-8)
 
         scheduler = get_linear_schedule_with_warmup(
             optimizer,
-            num_warmup_steps=0,
+            num_warmup_steps=len(train_loader),
             num_training_steps=len(train_loader) * epochs
         )
 
@@ -457,111 +568,6 @@ class StagedTrainingPipeline:
             total_loss = 0
 
             progress_bar = tqdm(train_loader, desc=f'阶段1 Epoch {epoch + 1}/{epochs}')
-            for batch in progress_bar:
-                optimizer.zero_grad()
-
-                input_ids = batch['input_ids'].to(self.device)
-                attention_mask = batch['attention_mask'].to(self.device)
-                labels = batch['label'].to(self.device)
-
-                # 只计算分类损失，不使用对比学习
-                outputs = self.model(input_ids, attention_mask, labels)
-                loss = outputs['loss']
-
-                loss.backward()
-                torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
-                optimizer.step()
-                scheduler.step()
-
-                total_loss += loss.item()
-                progress_bar.set_postfix({
-                    'loss': f'{loss.item():.4f}',
-                    'avg_loss': f'{total_loss / (progress_bar.n + 1):.4f}'
-                })
-
-            # 验证
-            val_f1 = self.evaluate(val_loader)
-            logger.info(f'阶段1 Epoch {epoch + 1}: Validation F1 = {val_f1:.4f}')
-
-            if val_f1 > best_f1:
-                best_f1 = val_f1
-                torch.save(self.model.state_dict(), 'outputs/stage1_best_model.pt')
-
-        logger.info(f'阶段1完成，最佳F1分数: {best_f1:.4f}')
-
-    def stage2_contrastive_training(self, train_loader, val_loader, epochs=8):
-        """阶段2：对比学习模块训练"""
-        logger.info("=== 阶段2：对比学习模块训练 ===")
-
-        # 冻结分类器，解冻对比学习模块
-        for param in self.model.bert.parameters():
-            param.requires_grad = False
-        for param in self.model.classifier.parameters():
-            param.requires_grad = False
-        for param in self.model.contrastive_learner.parameters():
-            param.requires_grad = True
-
-        optimizer = AdamW(filter(lambda p: p.requires_grad, self.model.parameters()),
-                          lr=1e-5, eps=1e-8)
-
-        best_f1 = 0.0
-        for epoch in range(epochs):
-            self.model.train()
-            total_loss = 0
-
-            progress_bar = tqdm(train_loader, desc=f'阶段2 Epoch {epoch + 1}/{epochs}')
-            for batch in progress_bar:
-                optimizer.zero_grad()
-
-                input_ids = batch['input_ids'].to(self.device)
-                attention_mask = batch['attention_mask'].to(self.device)
-                labels = batch['label'].to(self.device)
-
-                outputs = self.model(input_ids, attention_mask, labels)
-                loss = outputs['loss']
-
-                loss.backward()
-                torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
-                optimizer.step()
-
-                total_loss += loss.item()
-                progress_bar.set_postfix({
-                    'loss': f'{loss.item():.4f}',
-                    'avg_loss': f'{total_loss / (progress_bar.n + 1):.4f}'
-                })
-
-            # 验证
-            val_f1 = self.evaluate(val_loader)
-            logger.info(f'阶段2 Epoch {epoch + 1}: Validation F1 = {val_f1:.4f}')
-
-            if val_f1 > best_f1:
-                best_f1 = val_f1
-                torch.save(self.model.state_dict(), 'outputs/stage2_best_model.pt')
-
-        logger.info(f'阶段2完成，最佳F1分数: {best_f1:.4f}')
-
-    def stage3_joint_training(self, train_loader, val_loader, epochs=12):
-        """阶段3：联合微调"""
-        logger.info("=== 阶段3：联合微调优化 ===")
-
-        # 解冻所有参数
-        for param in self.model.parameters():
-            param.requires_grad = True
-
-        optimizer = AdamW(self.model.parameters(), lr=1e-5, eps=1e-8)
-
-        scheduler = get_linear_schedule_with_warmup(
-            optimizer,
-            num_warmup_steps=0,
-            num_training_steps=len(train_loader) * epochs
-        )
-
-        best_f1 = 0.0
-        for epoch in range(epochs):
-            self.model.train()
-            total_loss = 0
-
-            progress_bar = tqdm(train_loader, desc=f'阶段3 Epoch {epoch + 1}/{epochs}')
             for batch in progress_bar:
                 optimizer.zero_grad()
 
@@ -587,26 +593,77 @@ class StagedTrainingPipeline:
 
             # 验证
             val_f1 = self.evaluate(val_loader)
-            logger.info(f'阶段3 Epoch {epoch + 1}: Validation F1 = {val_f1:.4f}')
+            logger.info(f'阶段1 Epoch {epoch + 1}: Validation F1 = {val_f1:.4f}')
 
             if val_f1 > best_f1:
                 best_f1 = val_f1
-                torch.save(self.model.state_dict(), 'outputs/stage3_best_model.pt')
+                torch.save(self.model.state_dict(), 'outputs/stage1_best_model.pt')
 
-        logger.info(f'阶段3完成，最佳F1分数: {best_f1:.4f}')
+        logger.info(f'阶段1完成，最佳F1分数: {best_f1:.4f}')
+
+    def stage2_fine_tuning(self, train_loader, val_loader, epochs=12):
+        """阶段2：精细调优 - 使用更高学习率进行最终优化"""
+        logger.info("=== 阶段2：精细调优 ===")
+
+        # 使用稍高的学习率进行精细调优
+        optimizer = AdamW(self.model.parameters(), lr=2e-5, eps=1e-8)
+
+        scheduler = get_linear_schedule_with_warmup(
+            optimizer,
+            num_warmup_steps=0,
+            num_training_steps=len(train_loader) * epochs
+        )
+
+        best_f1 = 0.0
+        for epoch in range(epochs):
+            self.model.train()
+            total_loss = 0
+
+            progress_bar = tqdm(train_loader, desc=f'阶段2 Epoch {epoch + 1}/{epochs}')
+            for batch in progress_bar:
+                optimizer.zero_grad()
+
+                input_ids = batch['input_ids'].to(self.device)
+                attention_mask = batch['attention_mask'].to(self.device)
+                labels = batch['label'].to(self.device)
+
+                outputs = self.model(input_ids, attention_mask, labels)
+                loss = outputs['loss']
+
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
+                optimizer.step()
+                scheduler.step()
+
+                total_loss += loss.item()
+                loss_dict = outputs.get('loss_dict', {})
+                progress_bar.set_postfix({
+                    'total_loss': f'{loss.item():.4f}',
+                    'cls_loss': f'{loss_dict.get("classification_loss", 0):.4f}',
+                    'cont_loss': f'{loss_dict.get("contrastive_loss", 0):.4f}'
+                })
+
+            # 验证
+            val_f1 = self.evaluate(val_loader)
+            logger.info(f'阶段2 Epoch {epoch + 1}: Validation F1 = {val_f1:.4f}')
+
+            if val_f1 > best_f1:
+                best_f1 = val_f1
+                torch.save(self.model.state_dict(), 'outputs/stage2_best_model.pt')
+
+        logger.info(f'阶段2完成，最佳F1分数: {best_f1:.4f}')
         return best_f1
 
     def train_staged(self, train_texts, train_labels, val_texts, val_labels):
-        """执行完整的阶段性训练"""
+        """执行两阶段训练策略"""
         # 创建数据加载器
         train_loader, val_loader = self.create_data_loaders(
             train_texts, train_labels, val_texts, val_labels
         )
 
-        # 执行三个训练阶段
-        self.stage1_basic_training(train_loader, val_loader)
-        self.stage2_contrastive_training(train_loader, val_loader)
-        best_f1 = self.stage3_joint_training(train_loader, val_loader)
+        # 执行两个训练阶段
+        self.stage1_warmup_training(train_loader, val_loader)
+        best_f1 = self.stage2_fine_tuning(train_loader, val_loader)
 
         return best_f1
 
@@ -720,7 +777,7 @@ def main():
     )
 
     # 加载最佳模型
-    model.load_state_dict(torch.load('outputs/stage3_best_model.pt'))
+    model.load_state_dict(torch.load('outputs/stage2_best_model.pt'))
     trainer.model = model.to(device)
 
     final_metrics = trainer.detailed_evaluate(test_loader)

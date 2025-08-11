@@ -1,0 +1,2176 @@
+PDF has 16 pages
+--- ABSTRACT ---
+Abstract
+The burgeoning generative capabilities of large
+language models (LLMs) have raised grow-
+ing concerns about abuse, demanding auto-
+matic machine-generated text detectors. De-
+tectGPT (Mitchell et al., 2023), a zero-shot
+metric-based detector, first introduces pertur-
+bation and shows great performance improve-
+ment. However, in DetectGPT, the random per-
+turbation strategy could introduce noise, and
+logit regression depends on the threshold, harm-
+ing the generalizability and applicability of
+individual or small-batch inputs. Hence, we
+propose a novel fine-tuned detector, PECOLA ,
+bridging metric-based and fine-tuned methods
+by contrastive learning on selective perturba-
+tion. Selective strategy retains important tokens
+during perturbation and weights for multi-pair
+contrastive learning. The experiments show
+thatPECOLA outperforms the state-of-the-art
+(SOTA) by 1.20% in accuracy on average on
+four public datasets. And we further analyze
+the effectiveness, robustness, and generaliza-
+tion of the method.1
+1 
+
+--- Context around line 2 ---
+Does D ETECT GPT Fully Utilize Perturbation? Bridging Selective
+Perturbation to Fine-tuned Contrastive Learning Detector would be Better
+Shengchao Liu1, Xiaoming Liu1,∗, Yichen Wang1, Zehua Cheng1, Chengzhengxu Li1,
+Zhaohan Zhang2, Yu Lan1, Chao Shen1
+1Faculty of Electronic and Information Engineering, Xi’an Jiaotong University
+2Queen Mary University of London
+
+--- Context around line 11 ---
+Abstract
+The burgeoning generative capabilities of large
+language models (LLMs) have raised grow-
+ing concerns about abuse, demanding auto-
+matic machine-generated text detectors. De-
+tectGPT (Mitchell et al., 2023), a zero-shot
+metric-based detector, first introduces pertur-
+
+--- Context around line 21 ---
+logit regression depends on the threshold, harm-
+ing the generalizability and applicability of
+individual or small-batch inputs. Hence, we
+propose a novel fine-tuned detector, PECOLA ,
+bridging metric-based and fine-tuned methods
+by contrastive learning on selective perturba-
+tion. Selective strategy retains important tokens
+
+--- Context around line 23 ---
+individual or small-batch inputs. Hence, we
+propose a novel fine-tuned detector, PECOLA ,
+bridging metric-based and fine-tuned methods
+by contrastive learning on selective perturba-
+tion. Selective strategy retains important tokens
+during perturbation and weights for multi-pair
+contrastive learning. The experiments show
+
+--- Context around line 24 ---
+propose a novel fine-tuned detector, PECOLA ,
+bridging metric-based and fine-tuned methods
+by contrastive learning on selective perturba-
+tion. Selective strategy retains important tokens
+during perturbation and weights for multi-pair
+contrastive learning. The experiments show
+thatPECOLA outperforms the state-of-the-art
+
+--- Context around line 27 ---
+tion. Selective strategy retains important tokens
+during perturbation and weights for multi-pair
+contrastive learning. The experiments show
+thatPECOLA outperforms the state-of-the-art
+(SOTA) by 1.20% in accuracy on average on
+four public datasets. And we further analyze
+the effectiveness, robustness, and generaliza-
+
+--- Context around line 32 ---
+four public datasets. And we further analyze
+the effectiveness, robustness, and generaliza-
+tion of the method.1
+1 Introduction
+Machine-generated text (MGT) detection is to dis-
+criminate MGT from human-written texts (HWT),
+preventing abuse of large language models (LLMs),
+
+--- Context around line 36 ---
+Machine-generated text (MGT) detection is to dis-
+criminate MGT from human-written texts (HWT),
+preventing abuse of large language models (LLMs),
+including academic misconduct (Vasilatos et al.,
+2023), spam synthesis (Dou et al., 2020), untrust-
+worthy news (Zellers et al., 2019), etc. Currently,
+existing MGT detection methods can be mainly
+
+--- Context around line 40 ---
+2023), spam synthesis (Dou et al., 2020), untrust-
+worthy news (Zellers et al., 2019), etc. Currently,
+existing MGT detection methods can be mainly
+classified into two categories (Wu et al., 2023a;
+Wang et al., 2024), i.e., fine-tuned methods (Liu
+et al., 2023; Hu et al., 2023; Verma et al., 2023;
+OpenAI, 2023; Mao et al., 2024) and zero-shot
+
+--- Context around line 42 ---
+existing MGT detection methods can be mainly
+classified into two categories (Wu et al., 2023a;
+Wang et al., 2024), i.e., fine-tuned methods (Liu
+et al., 2023; Hu et al., 2023; Verma et al., 2023;
+OpenAI, 2023; Mao et al., 2024) and zero-shot
+metric-based methods (Gehrmann et al., 2019;
+Mitchell et al., 2023; Yang et al., 2023; Bao et al.,
+
+--- Context around line 45 ---
+et al., 2023; Hu et al., 2023; Verma et al., 2023;
+OpenAI, 2023; Mao et al., 2024) and zero-shot
+metric-based methods (Gehrmann et al., 2019;
+Mitchell et al., 2023; Yang et al., 2023; Bao et al.,
+2024; Wu et al., 2023b). In general terms, fine-
+tuned detector methods can achieve better accuracy
+*Corresponding author
+
+--- Context around line 48 ---
+Mitchell et al., 2023; Yang et al., 2023; Bao et al.,
+2024; Wu et al., 2023b). In general terms, fine-
+tuned detector methods can achieve better accuracy
+*Corresponding author
+1The code and datasets are released at https://github.
+com/lsc-1/Pecola .
+Yes, the 
+
+--- Context around line 84 ---
+ofPECOLA , which prevent modifying important tokens
+(in green). Orange tokens are the perturbed texts.
+than zero-shot metric-based methods, especially
+generalizable to black-box generators, but are more
+costly during data collection, fine-tuning, and run-
+ning, in most cases. On the other hand, zero-shot
+metric-based methods show better interpretability
+
+--- Context around line 88 ---
+costly during data collection, fine-tuning, and run-
+ning, in most cases. On the other hand, zero-shot
+metric-based methods show better interpretability
+than fine-tuned ones.
+DetectGPT (Mitchell et al., 2023), as an unsu-
+pervised zero-shot metric-based method, first intro-
+duces perturbation in MGT detection. Specifically,
+
+--- Context around line 91 ---
+than fine-tuned ones.
+DetectGPT (Mitchell et al., 2023), as an unsu-
+pervised zero-shot metric-based method, first intro-
+duces perturbation in MGT detection. Specifically,
+it applies random masking to the original input
+sample and uses T5 (Raffel et al., 2020) to fill in.
+It posits that minor perturbations of MGT tend to
+
+--- Context around line 96 ---
+sample and uses T5 (Raffel et al., 2020) to fill in.
+It posits that minor perturbations of MGT tend to
+have lower log probability under the base model
+than the original sample. The introduction of per-
+turbation in DetectGPT surpasses the vanilla log-
+probability-based method (Gehrmann et al., 2019)
+in white-box settings.
+
+--- Context around line 99 ---
+than the original sample. The introduction of per-
+turbation in DetectGPT surpasses the vanilla log-
+probability-based method (Gehrmann et al., 2019)
+in white-box settings.
+However, DetectGPT still has three significant
+defects: ( i) DetectGPT’s reliance on the logit re-
+gression module’s threshold compromises its gen-
+
+--- Context around line 105 ---
+gression module’s threshold compromises its gen-
+eralization in zero-shot settings and limited to large
+batch input, failing on individual inputs. ( ii) De-
+tectGPT does not fully utilize the perturbation. As
+a metrics-based method, it only considers the prob-
+ability difference caused by perturbation, which
+is overly simplified and slightly indistinguishable.
+
+--- Context around line 107 ---
+batch input, failing on individual inputs. ( ii) De-
+tectGPT does not fully utilize the perturbation. As
+a metrics-based method, it only considers the prob-
+ability difference caused by perturbation, which
+is overly simplified and slightly indistinguishable.
+Perturbation should indeed be a stronger augmentarXiv:2402.00263v4  [cs.CL]  7 Jul 2024
+that carries implicit language pattern information.
+
+--- Context around line 120 ---
+of DetectGPT.
+In this paper, we thus propose a Perturbation-
+based Contrastive Learning model, PECOLA , for
+MGT detection, toward the defects via two stages,
+i.e., Selective Strategy Perturbation (Sec. 3.1) and
+Token-Level Weighted Multi-Pairwise Contrastive
+Learning (Sec. 3.2). Firstly , Selective Strategy Per-
+
+--- Context around line 123 ---
+MGT detection, toward the defects via two stages,
+i.e., Selective Strategy Perturbation (Sec. 3.1) and
+Token-Level Weighted Multi-Pairwise Contrastive
+Learning (Sec. 3.2). Firstly , Selective Strategy Per-
+turbation is a token-level rewriting method with
+restrictions on modifying important texts (Campos
+et al., 2020) to reduce noise. The motivation is
+
+--- Context around line 124 ---
+i.e., Selective Strategy Perturbation (Sec. 3.1) and
+Token-Level Weighted Multi-Pairwise Contrastive
+Learning (Sec. 3.2). Firstly , Selective Strategy Per-
+turbation is a token-level rewriting method with
+restrictions on modifying important texts (Campos
+et al., 2020) to reduce noise. The motivation is
+to simulate the human behavior of modification
+
+--- Context around line 125 ---
+Token-Level Weighted Multi-Pairwise Contrastive
+Learning (Sec. 3.2). Firstly , Selective Strategy Per-
+turbation is a token-level rewriting method with
+restrictions on modifying important texts (Campos
+et al., 2020) to reduce noise. The motivation is
+to simulate the human behavior of modification
+(Verma and Lee, 2017; Fetaya et al., 2020; Wang
+
+--- Context around line 133 ---
+of token removal and substitution, as shown in
+Fig. 1. The experiments show that the Selective
+Strategy Perturbation method can improve the per-
+formance of both metrics-based ( i.e., DetectGPT)
+and model-based methods. Secondly , we propose a
+Multi-Pairwise Contrastive Learning model to pro-
+cess the perturbed texts. Different from the logit
+
+--- Context around line 135 ---
+Strategy Perturbation method can improve the per-
+formance of both metrics-based ( i.e., DetectGPT)
+and model-based methods. Secondly , we propose a
+Multi-Pairwise Contrastive Learning model to pro-
+cess the perturbed texts. Different from the logit
+regression module in DetectGPT, the trained model
+is generalizable without any threshold setting, and
+
+--- Context around line 136 ---
+formance of both metrics-based ( i.e., DetectGPT)
+and model-based methods. Secondly , we propose a
+Multi-Pairwise Contrastive Learning model to pro-
+cess the perturbed texts. Different from the logit
+regression module in DetectGPT, the trained model
+is generalizable without any threshold setting, and
+it can deal with individual inputs. Moreover, by
+
+--- Context around line 138 ---
+Multi-Pairwise Contrastive Learning model to pro-
+cess the perturbed texts. Different from the logit
+regression module in DetectGPT, the trained model
+is generalizable without any threshold setting, and
+it can deal with individual inputs. Moreover, by
+utilizing multi-pairwise contrastive learning, the
+model could better utilize perturbation to focus on
+
+--- Context around line 140 ---
+regression module in DetectGPT, the trained model
+is generalizable without any threshold setting, and
+it can deal with individual inputs. Moreover, by
+utilizing multi-pairwise contrastive learning, the
+model could better utilize perturbation to focus on
+the language pattern gap between HWT and MGT.
+The importance weight from the perturbation stage
+
+--- Context around line 141 ---
+is generalizable without any threshold setting, and
+it can deal with individual inputs. Moreover, by
+utilizing multi-pairwise contrastive learning, the
+model could better utilize perturbation to focus on
+the language pattern gap between HWT and MGT.
+The importance weight from the perturbation stage
+is also reused as contrastive learning weight. No-
+
+--- Context around line 142 ---
+it can deal with individual inputs. Moreover, by
+utilizing multi-pairwise contrastive learning, the
+model could better utilize perturbation to focus on
+the language pattern gap between HWT and MGT.
+The importance weight from the perturbation stage
+is also reused as contrastive learning weight. No-
+tably, by using contrastive learning, PECOLA is
+
+--- Context around line 145 ---
+the language pattern gap between HWT and MGT.
+The importance weight from the perturbation stage
+is also reused as contrastive learning weight. No-
+tably, by using contrastive learning, PECOLA is
+a strong few-shot fine-tuning method, which ef-
+fectively bridges and integrates metric-based and
+fine-tuned detector categories. Finally , extensive
+
+--- Context around line 146 ---
+The importance weight from the perturbation stage
+is also reused as contrastive learning weight. No-
+tably, by using contrastive learning, PECOLA is
+a strong few-shot fine-tuning method, which ef-
+fectively bridges and integrates metric-based and
+fine-tuned detector categories. Finally , extensive
+experiments show PECOLA is significantly superior
+
+--- Context around line 147 ---
+is also reused as contrastive learning weight. No-
+tably, by using contrastive learning, PECOLA is
+a strong few-shot fine-tuning method, which ef-
+fectively bridges and integrates metric-based and
+fine-tuned detector categories. Finally , extensive
+experiments show PECOLA is significantly superior
+to baseline and SOTA methods on four datasets,
+
+--- Context around line 151 ---
+fine-tuned detector categories. Finally , extensive
+experiments show PECOLA is significantly superior
+to baseline and SOTA methods on four datasets,
+PECOLA improves by 1.20% to SOTA on aver-
+age under few-shot settings, surpassing the latest
+methods by 3.84% among metric-based detectors
+and by 1.62% among fine-tuned detectors. Further
+
+--- Context around line 154 ---
+PECOLA improves by 1.20% to SOTA on aver-
+age under few-shot settings, surpassing the latest
+methods by 3.84% among metric-based detectors
+and by 1.62% among fine-tuned detectors. Further
+experiments show that PECOLA is also better at
+generalization, robustness, and effectiveness.
+Our contributions are summarized as follows:
+
+--- Context around line 161 ---
+•Selective Perturbation : Based on our analy-
+sis of various selective perturbation strategies,
+we propose a novel method considering to-ken importance, which reduces the noise and
+benefits to both supervised and unsupervised
+approaches.
+•Bridge Metric and Model-based Detectors :
+We utilize a novel fine-tuned contrastive learn-
+
+--- Context around line 163 ---
+we propose a novel method considering to-ken importance, which reduces the noise and
+benefits to both supervised and unsupervised
+approaches.
+•Bridge Metric and Model-based Detectors :
+We utilize a novel fine-tuned contrastive learn-
+ing module to replace the logit regression of
+DetectGPT (metric-based), which frees the de-
+
+--- Context around line 164 ---
+benefits to both supervised and unsupervised
+approaches.
+•Bridge Metric and Model-based Detectors :
+We utilize a novel fine-tuned contrastive learn-
+ing module to replace the logit regression of
+DetectGPT (metric-based), which frees the de-
+tector from setting the threshold, enables it to
+
+--- Context around line 165 ---
+approaches.
+•Bridge Metric and Model-based Detectors :
+We utilize a novel fine-tuned contrastive learn-
+ing module to replace the logit regression of
+DetectGPT (metric-based), which frees the de-
+tector from setting the threshold, enables it to
+deal with individual input, and can be general-
+
+--- Context around line 169 ---
+DetectGPT (metric-based), which frees the de-
+tector from setting the threshold, enables it to
+deal with individual input, and can be general-
+izable and effective on the few-shot setting by
+contrasting perturbed texts with origin ones.
+•Outperformance : Our detector PECOLA out-
+performs all eight compared models on four
+
+--- Context around line 173 ---
+contrasting perturbed texts with origin ones.
+•Outperformance : Our detector PECOLA out-
+performs all eight compared models on four
+public datasets. And PECOLA is more robust
+to the choice of base model and filling model.
+Furthermore, we prove its generalization abil-
+ity across domains and generators of data.
+
+--- Context around line 175 ---
+performs all eight compared models on four
+public datasets. And PECOLA is more robust
+to the choice of base model and filling model.
+Furthermore, we prove its generalization abil-
+ity across domains and generators of data.
+2 Related Work
+Machine-generated Text Detection. While fine-
+
+--- Context around line 190 ---
+Similarly, CoCo (Liu et al., 2023) is designed to
+detect MGT with low resource annotations, utiliz-
+ing a coherence-based contrastive learning model.
+Moreover, SeqXGPT (Wang et al., 2023) utilize log
+probability lists from white-box LLMs as features;
+Sniffer (Shi et al., 2024) and GPT-Who (Venka-
+traman et al., 2023) place more emphasis on trac-
+
+--- Context around line 200 ---
+by embedding imperceptible signals within text
+outputs during generation. In contrast to previous
+methods, our approach integrates data perturbation
+with contrastive learning, placing particular empha-
+sis on reducing reliance on mask-filling models and
+enhancing performance in few-shot scenarios.
+Perturbation. Data perturbation methods find fre-
+
+--- Context around line 201 ---
+outputs during generation. In contrast to previous
+methods, our approach integrates data perturbation
+with contrastive learning, placing particular empha-
+sis on reducing reliance on mask-filling models and
+enhancing performance in few-shot scenarios.
+Perturbation. Data perturbation methods find fre-
+quent application in text classification tasks (Gao
+
+--- Context around line 202 ---
+methods, our approach integrates data perturbation
+with contrastive learning, placing particular empha-
+sis on reducing reliance on mask-filling models and
+enhancing performance in few-shot scenarios.
+Perturbation. Data perturbation methods find fre-
+quent application in text classification tasks (Gao
+et al., 2022; Shum et al., 2023), which is commonly
+
+--- Context around line 204 ---
+sis on reducing reliance on mask-filling models and
+enhancing performance in few-shot scenarios.
+Perturbation. Data perturbation methods find fre-
+quent application in text classification tasks (Gao
+et al., 2022; Shum et al., 2023), which is commonly
+employed through the technique of consistency reg-
+ularization (Xie et al., 2020; Chen et al., 2020).
+
+--- Context around line 216 ---
+PLM -
+Encoder
+Multi -Contrastive Objective𝓛=𝓛𝒄𝒆+𝝀𝓛𝒄𝒐𝒏Joint Optimization via SGD
+Fine -tuningToken -Level Weighted Multi -
+Pairwise Contrastive Learning
+The inner ear is made up of tin
+y sensors called hair cells that 
+
+--- Context around line 218 ---
+Multi -Contrastive Objective𝓛=𝓛𝒄𝒆+𝝀𝓛𝒄𝒐𝒏Joint Optimization via SGD
+Fine -tuningToken -Level Weighted Multi -
+Pairwise Contrastive Learning
+The inner ear is made up of tin
+y sensors called hair cells that 
+detect the movement of the bo
+nes in our head and send signal
+
+--- Context around line 251 ---
+Level 
+WeightLLM free
+YAKEFigure 2: Overview of PECOLA . In the Selective Strategy Perturbation stage (Sec. 3.1), we use the YAKE algorithm
+to score token importance and then selective masking based on probability. Then, we fill in the masks with a
+mark-filling language model. In the Contrastive Learning stage (Sec. 3.2), we design a multi-pairwise method
+with token-level weights also from tokens importance. Yellow arrows represent attraction and blue ones represent
+repulsion. The model is optimized by combining cross-entropy (CE) loss Lceand contrastive loss Lcon. * Our
+
+--- Context around line 253 ---
+YAKEFigure 2: Overview of PECOLA . In the Selective Strategy Perturbation stage (Sec. 3.1), we use the YAKE algorithm
+to score token importance and then selective masking based on probability. Then, we fill in the masks with a
+mark-filling language model. In the Contrastive Learning stage (Sec. 3.2), we design a multi-pairwise method
+with token-level weights also from tokens importance. Yellow arrows represent attraction and blue ones represent
+repulsion. The model is optimized by combining cross-entropy (CE) loss Lceand contrastive loss Lcon. * Our
+method, different from DetectGPT, is generalizable on any mask-filling language model.
+Nevertheless, in MGT detection, previous pertur-
+
+--- Context around line 255 ---
+mark-filling language model. In the Contrastive Learning stage (Sec. 3.2), we design a multi-pairwise method
+with token-level weights also from tokens importance. Yellow arrows represent attraction and blue ones represent
+repulsion. The model is optimized by combining cross-entropy (CE) loss Lceand contrastive loss Lcon. * Our
+method, different from DetectGPT, is generalizable on any mask-filling language model.
+Nevertheless, in MGT detection, previous pertur-
+bation methods have exhibited certain limitations.
+For instance, they often resort to randomly select-
+
+--- Context around line 256 ---
+with token-level weights also from tokens importance. Yellow arrows represent attraction and blue ones represent
+repulsion. The model is optimized by combining cross-entropy (CE) loss Lceand contrastive loss Lcon. * Our
+method, different from DetectGPT, is generalizable on any mask-filling language model.
+Nevertheless, in MGT detection, previous pertur-
+bation methods have exhibited certain limitations.
+For instance, they often resort to randomly select-
+ing target tokens for synonym replacement (Wang
+
+--- Context around line 258 ---
+method, different from DetectGPT, is generalizable on any mask-filling language model.
+Nevertheless, in MGT detection, previous pertur-
+bation methods have exhibited certain limitations.
+For instance, they often resort to randomly select-
+ing target tokens for synonym replacement (Wang
+et al., 2018), deletion, insertion (Wei and Zou,
+2019), rewriting by LLMs (Mao et al., 2024), and
+
+--- Context around line 263 ---
+et al., 2018), deletion, insertion (Wei and Zou,
+2019), rewriting by LLMs (Mao et al., 2024), and
+fine-tuning pre-trained language models (PLMs)
+to fill text spans of variable lengths (Gao et al.,
+2022). While these methods do enhance text di-
+versity, the indiscriminate replacement of tokens
+without guided rules can lead to the generation of
+
+--- Context around line 265 ---
+fine-tuning pre-trained language models (PLMs)
+to fill text spans of variable lengths (Gao et al.,
+2022). While these methods do enhance text di-
+versity, the indiscriminate replacement of tokens
+without guided rules can lead to the generation of
+less reliable texts. Wang et al. (2024) utilize pertur-
+bations as stress test approaches for the robustness
+
+--- Context around line 269 ---
+without guided rules can lead to the generation of
+less reliable texts. Wang et al. (2024) utilize pertur-
+bations as stress test approaches for the robustness
+of MGT detectors to show their loopholes. These
+limitations motivate us to devise data perturbation
+methods tailored for MGT detection. Our approach,
+with selective perturbation, aims to better represent
+
+--- Context around line 272 ---
+of MGT detectors to show their loopholes. These
+limitations motivate us to devise data perturbation
+methods tailored for MGT detection. Our approach,
+with selective perturbation, aims to better represent
+meaningful recombination spaces while preserving
+the inherent semantic features of the text, ultimately
+enhancing the diversity of samples.
+
+--- Context around line 277 ---
+the inherent semantic features of the text, ultimately
+enhancing the diversity of samples.
+Constrastive Learning. Contrastive learning is an
+effective solution method to the issues that solely
+relying on cross-entropy classification loss would
+lead to a lack of robustness and suboptimal gen-
+eralization (Tack et al., 2020; Hu et al., 2023). In
+
+--- Context around line 278 ---
+enhancing the diversity of samples.
+Constrastive Learning. Contrastive learning is an
+effective solution method to the issues that solely
+relying on cross-entropy classification loss would
+lead to a lack of robustness and suboptimal gen-
+eralization (Tack et al., 2020; Hu et al., 2023). In
+limited labeled data task (Gunel et al., 2021), in-
+
+--- Context around line 283 ---
+eralization (Tack et al., 2020; Hu et al., 2023). In
+limited labeled data task (Gunel et al., 2021), in-
+troduce a robust contrastive learning method to
+capture the similarities between the same instances
+in the representation space while separating those
+of different classes. Similarly, out-of-distribution(OOD) usually leads to severe semantic shift is-
+sues during inference, prompting another approach
+
+--- Context around line 287 ---
+in the representation space while separating those
+of different classes. Similarly, out-of-distribution(OOD) usually leads to severe semantic shift is-
+sues during inference, prompting another approach
+based on margin contrastive learning (Zhou et al.,
+2021). Differently, our method focuses more on the
+changes of the rephrase space in data distribution
+after perturbation, and strives to reduce reliance on
+
+--- Context around line 288 ---
+of different classes. Similarly, out-of-distribution(OOD) usually leads to severe semantic shift is-
+sues during inference, prompting another approach
+based on margin contrastive learning (Zhou et al.,
+2021). Differently, our method focuses more on the
+changes of the rephrase space in data distribution
+after perturbation, and strives to reduce reliance on
+the mask-filling models in few-shot learning.
+
+--- Context around line 289 ---
+sues during inference, prompting another approach
+based on margin contrastive learning (Zhou et al.,
+2021). Differently, our method focuses more on the
+changes of the rephrase space in data distribution
+after perturbation, and strives to reduce reliance on
+the mask-filling models in few-shot learning.
+3 Methodology
+
+--- Context around line 292 ---
+changes of the rephrase space in data distribution
+after perturbation, and strives to reduce reliance on
+the mask-filling models in few-shot learning.
+3 Methodology
+As shown in Fig. 2, the workflow of PECOLA
+mainly consists of two stages: Selective Strategy
+Perturbation and Supervised Contrastive Learning,
+
+--- Context around line 293 ---
+after perturbation, and strives to reduce reliance on
+the mask-filling models in few-shot learning.
+3 Methodology
+As shown in Fig. 2, the workflow of PECOLA
+mainly consists of two stages: Selective Strategy
+Perturbation and Supervised Contrastive Learning,
+which joined the advantage of metric-based and
+
+--- Context around line 296 ---
+As shown in Fig. 2, the workflow of PECOLA
+mainly consists of two stages: Selective Strategy
+Perturbation and Supervised Contrastive Learning,
+which joined the advantage of metric-based and
+model-based detection methods, respectively.
+3.1 Selective Strategy Perturbation
+In this work, we present a token-level selective
+
+--- Context around line 298 ---
+Perturbation and Supervised Contrastive Learning,
+which joined the advantage of metric-based and
+model-based detection methods, respectively.
+3.1 Selective Strategy Perturbation
+In this work, we present a token-level selective
+strategy perturbation method to relieve the informa-
+tion loss caused by the random masking used in De-
+
+--- Context around line 301 ---
+3.1 Selective Strategy Perturbation
+In this work, we present a token-level selective
+strategy perturbation method to relieve the informa-
+tion loss caused by the random masking used in De-
+tectGPT. Our approach involves adapting the mask-
+selection probability for each text token based on
+its importance, thus generating perturbed inputs
+
+--- Context around line 303 ---
+strategy perturbation method to relieve the informa-
+tion loss caused by the random masking used in De-
+tectGPT. Our approach involves adapting the mask-
+selection probability for each text token based on
+its importance, thus generating perturbed inputs
+with strategically placed masks. Additionally, we
+harness LLMs to populate the masks, creating filled
+
+--- Context around line 310 ---
+perturbation inputs. This step effectively intro-
+duces a diverse range of perturbation information
+into our detection model.
+Token Importance Assessment. To accurately as-
+sess the significance of tokens within the text and
+mitigate information loss stemming from random
+masking, we expand upon the YAKE algorithm
+
+--- Context around line 314 ---
+sess the significance of tokens within the text and
+mitigate information loss stemming from random
+masking, we expand upon the YAKE algorithm
+(Campos et al., 2020) to operate at the token level.
+The YAKE algorithm builds upon certain assump-
+tions (Machado et al., 2009), which posit that the
+importance of a candidate word decreases as the
+
+--- Context around line 316 ---
+masking, we expand upon the YAKE algorithm
+(Campos et al., 2020) to operate at the token level.
+The YAKE algorithm builds upon certain assump-
+tions (Machado et al., 2009), which posit that the
+importance of a candidate word decreases as the
+richness of the vocabulary surrounding it increases.
+This fundamental assumption remains applicable
+
+--- Context around line 329 ---
+i, . . . , en
+i}), we
+employ the YAKE algorithm to compute a score
+for each token e. Tokens with scores falling below
+the specified threshold αare then incorporated into
+the set of important tokens Ki:
+Ki=(
+
+--- Context around line 351 ---
+i . In order to relieve the information loss
+caused by masking perturbation, we add regulariza-
+tion to the vanilla random masking method and use
+a selective masking strategy to prevent important
+tokens from being masked.
+Given an input text si=
+e1
+
+--- Context around line 377 ---
+1, ..., smask
+i}and include them in the
+training set to give the model masked perturbation,
+improving model robustness.
+Mask-Filling . Additionally, we utilize PLMs,
+e.g., T5 (Raffel et al., 2020) or RoBERTa (Liu
+et al., 2019) etc., to fill the masked perturbation
+
+--- Context around line 378 ---
+i}and include them in the
+training set to give the model masked perturbation,
+improving model robustness.
+Mask-Filling . Additionally, we utilize PLMs,
+e.g., T5 (Raffel et al., 2020) or RoBERTa (Liu
+et al., 2019) etc., to fill the masked perturbation
+inputs and create the filled perturbation inputs
+
+--- Context around line 393 ---
+i}.
+3.2 Token-Level Weighted Multi-Pairwise
+Contrastive Learning
+Importance-based Feature Reconstruction . Ex-
+isting MGT methods (Liu et al., 2023) often uni-
+formly extract all token information in the text,
+ignoring the huge impact of a few important to-
+
+--- Context around line 395 ---
+Contrastive Learning
+Importance-based Feature Reconstruction . Ex-
+isting MGT methods (Liu et al., 2023) often uni-
+formly extract all token information in the text,
+ignoring the huge impact of a few important to-
+kens on the detection model. In this work, we
+reconstruct the token feature extracted by PLM ac-
+
+--- Context around line 398 ---
+formly extract all token information in the text,
+ignoring the huge impact of a few important to-
+kens on the detection model. In this work, we
+reconstruct the token feature extracted by PLM ac-
+cording to the importance of the token in the input
+text, allowing the detection model to focus more on
+important token information. We assign adaptive
+
+--- Context around line 401 ---
+reconstruct the token feature extracted by PLM ac-
+cording to the importance of the token in the input
+text, allowing the detection model to focus more on
+important token information. We assign adaptive
+weights to all tokens in the input:
+wn
+i=1−Score (en
+
+--- Context around line 429 ---
+By using feature reconstruction, we assign more
+weight to important tokens. This allows our de-
+tection model to concentrate on the characteristic
+information of these important tokens.
+Multi-Pairwise Contrastive Learning . Consider-
+ing that existing works (Gunel et al., 2021; Zhou
+et al., 2021; Liu et al., 2023) mainly concentrate on
+
+--- Context around line 431 ---
+tection model to concentrate on the characteristic
+information of these important tokens.
+Multi-Pairwise Contrastive Learning . Consider-
+ing that existing works (Gunel et al., 2021; Zhou
+et al., 2021; Liu et al., 2023) mainly concentrate on
+single-input feature learning while overlooking in-
+put correlations, we introduce contrastive learning
+
+--- Context around line 434 ---
+ing that existing works (Gunel et al., 2021; Zhou
+et al., 2021; Liu et al., 2023) mainly concentrate on
+single-input feature learning while overlooking in-
+put correlations, we introduce contrastive learning
+into MGT. It enables PECOLA to discern the dis-
+tinct featurinputes of variously labeled data, more
+accurately capture input features, and significantly
+
+--- Context around line 435 ---
+et al., 2021; Liu et al., 2023) mainly concentrate on
+single-input feature learning while overlooking in-
+put correlations, we introduce contrastive learning
+into MGT. It enables PECOLA to discern the dis-
+tinct featurinputes of variously labeled data, more
+accurately capture input features, and significantly
+enhance performance in few-shot setting.
+
+--- Context around line 443 ---
+i=1, where M
+is the batch size, we calculate the positive class
+contrastive loss and negative class contrastive loss
+on the last hidden layer embedding of the first token
+output h1
+ifrom the base PLM:
+Lpos=MX
+
+--- Context around line 473 ---
+i−h1
+p∥2. (8)
+This adaptive margin ensures that the model is
+steered to maintain discriminative embeddings de-
+spite data perturbation during training. Then we
+get the following contrastive loss as:
+Lcon=1
+
+--- Context around line 476 ---
+steered to maintain discriminative embeddings de-
+spite data perturbation during training. Then we
+get the following contrastive loss as:
+Lcon=1
+M(Lpos+Lneg). (9)
+For supervised learning tasks, we utilize the cross-
+entropy classification loss Lceto train our detection
+
+--- Context around line 479 ---
+Lcon=1
+M(Lpos+Lneg). (9)
+For supervised learning tasks, we utilize the cross-
+entropy classification loss Lceto train our detection
+model. By adjusting the weight λto balance the
+impact of various losses on the model, our total
+loss is given by the following:
+
+--- Context around line 481 ---
+For supervised learning tasks, we utilize the cross-
+entropy classification loss Lceto train our detection
+model. By adjusting the weight λto balance the
+impact of various losses on the model, our total
+loss is given by the following:
+L=Lce+λLcon. (10)
+4 Experiments
+
+--- Context around line 482 ---
+entropy classification loss Lceto train our detection
+model. By adjusting the weight λto balance the
+impact of various losses on the model, our total
+loss is given by the following:
+L=Lce+λLcon. (10)
+4 Experiments
+4.1 Experiment Settings
+
+--- Context around line 489 ---
+To demonstrate the effectiveness of PECOLA , we
+conduct extensive experiments on four open-source
+datasets under few-shot learning settings.
+Datasets. Grover (Zellers et al., 2019), generated
+by the transformer-based news generator Grover-
+Mega (1.5B); GPT-2 , a webtext dataset provided
+by OpenAI (2019) based on GPT-2 XL (1.5B);
+
+--- Context around line 495 ---
+by OpenAI (2019) based on GPT-2 XL (1.5B);
+GPT-3.5 , a news-style dataset constructed by CoCo
+(Liu et al., 2023) using the text-DaVinci-003 model
+(175B); HC3 (Guo et al., 2023), involving open
+domains, finance, healthcare, law, and psychology
+texts, composed of comparative responses from
+human experts and ChatGPT.
+
+--- Context around line 500 ---
+texts, composed of comparative responses from
+human experts and ChatGPT.
+Few-shot Learning Settings. We randomly sam-
+ple 32, 64, 128 and 512 samples from the original
+training set, while keeping the balance of machine
+and human categories. More details are provided
+in Appendix A.1.4.2 Comparison Models
+
+--- Context around line 504 ---
+training set, while keeping the balance of machine
+and human categories. More details are provided
+in Appendix A.1.4.2 Comparison Models
+We compare P ECOLA with both unsupervised and
+supervised MGT detection methods:
+RoBERTa (Liu et al., 2019), supervised methods
+via standard fine-tuning PLMs as classifiers. We
+
+--- Context around line 506 ---
+in Appendix A.1.4.2 Comparison Models
+We compare P ECOLA with both unsupervised and
+supervised MGT detection methods:
+RoBERTa (Liu et al., 2019), supervised methods
+via standard fine-tuning PLMs as classifiers. We
+use RoBERTa-base (125M).
+GLTR (Gehrmann et al., 2019), a metric-based
+
+--- Context around line 507 ---
+We compare P ECOLA with both unsupervised and
+supervised MGT detection methods:
+RoBERTa (Liu et al., 2019), supervised methods
+via standard fine-tuning PLMs as classifiers. We
+use RoBERTa-base (125M).
+GLTR (Gehrmann et al., 2019), a metric-based
+detector and based on next-token probability. We
+
+--- Context around line 514 ---
+follow the setting of Guo et al. (2023), utilizing
+the Test-2 feature. For a fair comparison with fine-
+tuning methods, we first use the few-shot training
+samples to settle the threshold and adapt the fixed
+threshold in the test set.2
+CE+SCL (Gunel et al., 2021), a fine-tuned detec-
+tor, used in conjunction with the Cross-Entropy
+
+--- Context around line 520 ---
+tor, used in conjunction with the Cross-Entropy
+(CE) loss, exhibiting impressive performance in
+few-shot learning settings.
+CE+Margin (Zhou et al., 2021), a contrastive learn-
+ing approach focuses on separating OOD instances
+from In-Distribution (ID) instances, aiming to mini-
+mize the L 2distance between instances of the same
+
+--- Context around line 521 ---
+(CE) loss, exhibiting impressive performance in
+few-shot learning settings.
+CE+Margin (Zhou et al., 2021), a contrastive learn-
+ing approach focuses on separating OOD instances
+from In-Distribution (ID) instances, aiming to mini-
+mize the L 2distance between instances of the same
+label. We train the detector by combining CE loss.
+
+--- Context around line 522 ---
+few-shot learning settings.
+CE+Margin (Zhou et al., 2021), a contrastive learn-
+ing approach focuses on separating OOD instances
+from In-Distribution (ID) instances, aiming to mini-
+mize the L 2distance between instances of the same
+label. We train the detector by combining CE loss.
+IT:Clust (Shnarch et al., 2022), a general text clas-
+
+--- Context around line 527 ---
+label. We train the detector by combining CE loss.
+IT:Clust (Shnarch et al., 2022), a general text clas-
+sification method that employs unsupervised clus-
+tering as an intermediate for fine-tuning PLMs, uti-
+lizing RoBERTa-base.
+CoCo (Liu et al., 2023) utilizes coherence graph
+representation and contrastive learning to improve
+
+--- Context around line 531 ---
+lizing RoBERTa-base.
+CoCo (Liu et al., 2023) utilizes coherence graph
+representation and contrastive learning to improve
+supervised fine-tuning methods in both inadequate
+and adequate data resource scenarios.
+DetectGPT (Mitchell et al., 2023), a zero-shot
+metric-based MGT detector, using T5-large (Raffel
+
+--- Context around line 532 ---
+CoCo (Liu et al., 2023) utilizes coherence graph
+representation and contrastive learning to improve
+supervised fine-tuning methods in both inadequate
+and adequate data resource scenarios.
+DetectGPT (Mitchell et al., 2023), a zero-shot
+metric-based MGT detector, using T5-large (Raffel
+et al., 2020) to perturb texts. Same as GLTR , we
+
+--- Context around line 541 ---
+zero-shot detector, building upon the foundation
+of DetectGPT, and utilizes a surrogate GPT-Neo
+(2.7B) (Black et al., 2022) model for scoring.
+4.3 Performance Comparison
+As shown in Table 1, PECOLA surpasses the com-
+petitors on all datasets in the few-shot MGT de-
+tection task. Specifically, compared with the best
+
+--- Context around line 546 ---
+petitors on all datasets in the few-shot MGT de-
+tection task. Specifically, compared with the best
+2The base model of GLTR is chosen based on the generator
+of the dataset: for GPT-2 and Grover datasets, we use GPT-2
+Small (124M); and for GPT-3.5 and HC3 datasets, we use GPT-
+J (6B) (Wang, 2021), which is the best open-source model to
+simulate ChatGPT and GPT-3.5 empirically.
+
+--- Context around line 549 ---
+of the dataset: for GPT-2 and Grover datasets, we use GPT-2
+Small (124M); and for GPT-3.5 and HC3 datasets, we use GPT-
+J (6B) (Wang, 2021), which is the best open-source model to
+simulate ChatGPT and GPT-3.5 empirically.
+3For all four datasets (including HC3 and GPT-3.5
+datasets), we use GPT-2 Small (124M) as the base model
+to calculate the likelihood. The reason is Mireshghallah et al.
+
+--- Context around line 552 ---
+simulate ChatGPT and GPT-3.5 empirically.
+3For all four datasets (including HC3 and GPT-3.5
+datasets), we use GPT-2 Small (124M) as the base model
+to calculate the likelihood. The reason is Mireshghallah et al.
+(2023) find that small model is better black-box detector for
+DetectGPT .
+Dataset Metric Shot RoBERTa GLTR†CE+SCL CE+Margin IT:Clust CoCo * DetectGPT†
+
+--- Context around line 554 ---
+datasets), we use GPT-2 Small (124M) as the base model
+to calculate the likelihood. The reason is Mireshghallah et al.
+(2023) find that small model is better black-box detector for
+DetectGPT .
+Dataset Metric Shot RoBERTa GLTR†CE+SCL CE+Margin IT:Clust CoCo * DetectGPT†
+*Fast-Detect.†
+*PECOLAGroverAcc32 48.83 10.31 56.61 55.86 4.43 56.79 3.31 41.57 3.58 51.60 8.42 55.02 56.06 59.03 1.63
+
+--- Context around line 587 ---
+128 97.56 0.38 98.29 98.17 0.30 98.14 0.36 95.43 1.15 97.59 1.05 95.01 89.92 98.63 0.32
+512 98.85 0.40 98.31 98.93 0.21 98.99 0.20 97.98 0.47 98.59 1.16 95.05 91.06 99.15 0.11
+Table 1: Comparison of PECOLA to baseline methods in few-shot MGT detection. The results are average values of
+10 runs with different random seeds. The subscript means the standard deviation ( e.g.,99.150.11means 99.15 ±
+0.11). †Zero-shot model-based methods’ results are deterministic, so we do not report standard deviation. Also,
+these methods must have the white-box generator as the base model, which is different from the black-box settings
+of other model-based methods. Asterisk ( *) denotes the latest SOTA method. And we also conduct a more in-depth
+
+--- Context around line 589 ---
+Table 1: Comparison of PECOLA to baseline methods in few-shot MGT detection. The results are average values of
+10 runs with different random seeds. The subscript means the standard deviation ( e.g.,99.150.11means 99.15 ±
+0.11). †Zero-shot model-based methods’ results are deterministic, so we do not report standard deviation. Also,
+these methods must have the white-box generator as the base model, which is different from the black-box settings
+of other model-based methods. Asterisk ( *) denotes the latest SOTA method. And we also conduct a more in-depth
+test on the entire training set in Appendix C.3.
+competitor, PECOLA achieves accuracy and F1-
+
+--- Context around line 590 ---
+10 runs with different random seeds. The subscript means the standard deviation ( e.g.,99.150.11means 99.15 ±
+0.11). †Zero-shot model-based methods’ results are deterministic, so we do not report standard deviation. Also,
+these methods must have the white-box generator as the base model, which is different from the black-box settings
+of other model-based methods. Asterisk ( *) denotes the latest SOTA method. And we also conduct a more in-depth
+test on the entire training set in Appendix C.3.
+competitor, PECOLA achieves accuracy and F1-
+score improvement of 2.04% and 1.42%, 1.71%
+
+--- Context around line 591 ---
+0.11). †Zero-shot model-based methods’ results are deterministic, so we do not report standard deviation. Also,
+these methods must have the white-box generator as the base model, which is different from the black-box settings
+of other model-based methods. Asterisk ( *) denotes the latest SOTA method. And we also conduct a more in-depth
+test on the entire training set in Appendix C.3.
+competitor, PECOLA achieves accuracy and F1-
+score improvement of 2.04% and 1.42%, 1.71%
+and 2.55% on Grover and GPT2 datasets. On
+
+--- Context around line 601 ---
+prove the effectiveness of PECOLA , which inte-
+grates the advantage of unsupervised (perturbation
+for metric-based) and supervised (contrastive learn-
+ing for model-based) MGT detection methods.
+Moreover, the unsupervised learning methods
+tend to show better performance in extremely few
+shot scenarios. Unsurprisingly, unsupervised meth-
+
+--- Context around line 602 ---
+grates the advantage of unsupervised (perturbation
+for metric-based) and supervised (contrastive learn-
+ing for model-based) MGT detection methods.
+Moreover, the unsupervised learning methods
+tend to show better performance in extremely few
+shot scenarios. Unsurprisingly, unsupervised meth-
+ods do not see a notable performance improvementwith the increase in the number of training samples,
+
+--- Context around line 603 ---
+for metric-based) and supervised (contrastive learn-
+ing for model-based) MGT detection methods.
+Moreover, the unsupervised learning methods
+tend to show better performance in extremely few
+shot scenarios. Unsurprisingly, unsupervised meth-
+ods do not see a notable performance improvementwith the increase in the number of training samples,
+which causes them to outperform on the fewest shot
+
+--- Context around line 610 ---
+settings initially but soon be surpassed. As for the
+deception of generators, Grover appears to be the
+hardest to detect, while other models are relatively
+“honest” to detectors. It might have originated from
+the adversarial training strategy of Grover, while
+the bulit-in detector module adversarially shifts the
+LLM’s detectable features. More interestingly, ad-
+
+--- Context around line 615 ---
+the bulit-in detector module adversarially shifts the
+LLM’s detectable features. More interestingly, ad-
+vanced language models show a weaker ability to
+cheat detectors. Most detectors achieve around
+98% in accuracy on the GPT-3.5 and HC3 datasets,
+which is consistent with the conclusion from Liu
+et al. (2023); Chen et al. (2023). We hypothesize
+
+--- Context around line 627 ---
+ponents, we do the ablation experiments on the
+Selective Strategy Perturbation stage and the Con-
+trastive Learning stage on the 64-example GPT-2
+dataset. We also demonstrate the Scalability of
+PECOLA in Appendix C.1.
+Method Acc F1
+w/o. mask 78.00 1.40 77.93 1.43
+
+--- Context around line 630 ---
+dataset. We also demonstrate the Scalability of
+PECOLA in Appendix C.1.
+Method Acc F1
+w/o. mask 78.00 1.40 77.93 1.43
+w/o. mask-fill 77.78 1.82 77.72 1.83
+w/o. mask. CL w 75.80 2.22 75.23 2.46
+w/o. mask-fill. CL w 75.56 1.47 75.10 1.73
+
+--- Context around line 646 ---
+selected mask texts for training; ( ii)w/o. mask-fill ,
+not using mask-filling texts for training.
+Ablation on Contrastive Learning. It primarily
+investigates the impact of CE and contrastive loss.
+(i)w/o. CL wrefers to the model ablating weighted
+contrastive learning; ( ii)w/o.wrefers to the model
+including contrastive learning but ablating weight.
+
+--- Context around line 647 ---
+not using mask-filling texts for training.
+Ablation on Contrastive Learning. It primarily
+investigates the impact of CE and contrastive loss.
+(i)w/o. CL wrefers to the model ablating weighted
+contrastive learning; ( ii)w/o.wrefers to the model
+including contrastive learning but ablating weight.
+As demonstrated in Table 2, in scenarios employ-
+
+--- Context around line 648 ---
+Ablation on Contrastive Learning. It primarily
+investigates the impact of CE and contrastive loss.
+(i)w/o. CL wrefers to the model ablating weighted
+contrastive learning; ( ii)w/o.wrefers to the model
+including contrastive learning but ablating weight.
+As demonstrated in Table 2, in scenarios employ-
+ing only the CE loss, the Selective Strategy Per-
+
+--- Context around line 649 ---
+investigates the impact of CE and contrastive loss.
+(i)w/o. CL wrefers to the model ablating weighted
+contrastive learning; ( ii)w/o.wrefers to the model
+including contrastive learning but ablating weight.
+As demonstrated in Table 2, in scenarios employ-
+ing only the CE loss, the Selective Strategy Per-
+turbation method contributes to significant perfor-
+
+--- Context around line 650 ---
+(i)w/o. CL wrefers to the model ablating weighted
+contrastive learning; ( ii)w/o.wrefers to the model
+including contrastive learning but ablating weight.
+As demonstrated in Table 2, in scenarios employ-
+ing only the CE loss, the Selective Strategy Per-
+turbation method contributes to significant perfor-
+mance improvement. Moreover, the introduction
+
+--- Context around line 653 ---
+As demonstrated in Table 2, in scenarios employ-
+ing only the CE loss, the Selective Strategy Per-
+turbation method contributes to significant perfor-
+mance improvement. Moreover, the introduction
+of weighting further enhances accuracy when com-
+pared to the direct use of margin loss. It reveals the
+validation of bridging the metric-based and model-
+
+--- Context around line 657 ---
+of weighting further enhances accuracy when com-
+pared to the direct use of margin loss. It reveals the
+validation of bridging the metric-based and model-
+based detectors, i.e., employing the Selective Strat-
+egy Perturbation method to evaluate the token im-
+portance for the multi-pairwise contrastive learning
+method. Furthermore, within the overall frame-
+
+--- Context around line 659 ---
+validation of bridging the metric-based and model-
+based detectors, i.e., employing the Selective Strat-
+egy Perturbation method to evaluate the token im-
+portance for the multi-pairwise contrastive learning
+method. Furthermore, within the overall frame-
+work, the removal of the select mask text results
+in a more rapid decrease in accuracy compared to
+
+--- Context around line 660 ---
+based detectors, i.e., employing the Selective Strat-
+egy Perturbation method to evaluate the token im-
+portance for the multi-pairwise contrastive learning
+method. Furthermore, within the overall frame-
+work, the removal of the select mask text results
+in a more rapid decrease in accuracy compared to
+the removal of the mask-filling text. This finding
+
+--- Context around line 661 ---
+egy Perturbation method to evaluate the token im-
+portance for the multi-pairwise contrastive learning
+method. Furthermore, within the overall frame-
+work, the removal of the select mask text results
+in a more rapid decrease in accuracy compared to
+the removal of the mask-filling text. This finding
+substantiates that the Token-Level Weighted Multi-
+
+--- Context around line 666 ---
+the removal of the mask-filling text. This finding
+substantiates that the Token-Level Weighted Multi-
+Pairwise Contrastive Learning method can betterfocus on the alterations in the rephrased space fol-
+lowing the application of Selective Strategy Pertur-
+bation to the text.
+4.5 Discussion and Analysis
+4.5.1 Model Qualities
+
+--- Context around line 670 ---
+bation to the text.
+4.5 Discussion and Analysis
+4.5.1 Model Qualities
+We analyze the model qualities, including robust-
+ness and affinity in this section. Here, we test on
+the 10,000-example GPT-2 test dataset, and the
+perturbation scale is set to 15%.
+
+--- Context around line 671 ---
+4.5 Discussion and Analysis
+4.5.1 Model Qualities
+We analyze the model qualities, including robust-
+ness and affinity in this section. Here, we test on
+the 10,000-example GPT-2 test dataset, and the
+perturbation scale is set to 15%.
+Analysis on Robustness. To validate the robust-
+
+--- Context around line 676 ---
+perturbation scale is set to 15%.
+Analysis on Robustness. To validate the robust-
+ness of PECOLA in the few-shot learning settings,
+we apply four post hoc perturbation operations for
+each token in the test dataset randomly, i.e., dele-
+tion, replacement, insertion, and repetition. As
+indicated in Table 3, for each perturbation method
+
+--- Context around line 680 ---
+each token in the test dataset randomly, i.e., dele-
+tion, replacement, insertion, and repetition. As
+indicated in Table 3, for each perturbation method
+employed, our decline rate is consistently lower
+compared to the baseline RoBERTa. On average,
+PECOLA maintains a 5.66% higher accuracy and
+an 8.77% superior F1-score. Specifically, in the
+
+--- Context around line 685 ---
+PECOLA maintains a 5.66% higher accuracy and
+an 8.77% superior F1-score. Specifically, in the
+deletion method, where we introduce a 15% ran-
+dom perturbation, it is noteworthy that the accuracy
+ofPECOLA decreases merely 1.64%, underscoring
+its remarkable robustness.
+Model RoBERTa P ECOLA
+
+--- Context around line 689 ---
+ofPECOLA decreases merely 1.64%, underscoring
+its remarkable robustness.
+Model RoBERTa P ECOLA
+Metric Acc F1 Acc F1
+Original 74.41 2.47 73.91 2.69 78.92 1.14 78.88 1.17
+Delete 71.77 5.88(-2.640) 70.42 8.05(-3.490) 77.28 1.79(-1.640) 77.06 2.03(-1.820)
+Repeat 64.69 6.63(-9.720) 61.74 9.20(-12.17) 69.74 4.83(-9.180) 67.87 6.24(-11.01)
+
+--- Context around line 697 ---
+Replace 52.04 1.58(-22.37) 39.48 3.59(-34.43) 57.25 2.21(-21.67) 48.89 3.93(-29.99)
+Average 59.81 (-14.60) 52.02 (-21.89) 65.47 (-13.45) 60.78 (-18.10)
+Table 3: Model robustness to four perturbations.
+Analysis on Affinity. Affinity pertains to alter-
+ations in data distribution resulting from pertur-
+bations, quantified by observing the fluctuations
+in accuracy. We demonstrate the superiority of
+
+--- Context around line 702 ---
+bations, quantified by observing the fluctuations
+in accuracy. We demonstrate the superiority of
+the selective masking method over the random
+masking method using the Affinity metric, follow-
+ing the setting of DetectGPT. We applied a 15%
+mask proportion with a span of 2 tokens on the
+test dataset and simultaneously employed T5-Large
+
+--- Context around line 703 ---
+in accuracy. We demonstrate the superiority of
+the selective masking method over the random
+masking method using the Affinity metric, follow-
+ing the setting of DetectGPT. We applied a 15%
+mask proportion with a span of 2 tokens on the
+test dataset and simultaneously employed T5-Large
+(Raffel et al., 2020) as the mask-filling model. We
+
+--- Context around line 707 ---
+mask proportion with a span of 2 tokens on the
+test dataset and simultaneously employed T5-Large
+(Raffel et al., 2020) as the mask-filling model. We
+trained RoBERTa-base and PECOLA on the 64-
+example GPT2 dataset. As shown in Table 4, in
+comparison to the random masking perturbation
+method utilized in DetectGPT, we observe a 1.92%
+
+--- Context around line 711 ---
+example GPT2 dataset. As shown in Table 4, in
+comparison to the random masking perturbation
+method utilized in DetectGPT, we observe a 1.92%
+and 0.49% increase in Affinity when employing
+the selective masking method. Additionally, the
+mask-filling method yields affinity improvements
+of 3.38% and 1.32% for RoBERTa and PECOLA
+
+--- Context around line 713 ---
+method utilized in DetectGPT, we observe a 1.92%
+and 0.49% increase in Affinity when employing
+the selective masking method. Additionally, the
+mask-filling method yields affinity improvements
+of 3.38% and 1.32% for RoBERTa and PECOLA
+models, respectively. These results illustrate that
+the Selective Multi-Strategy Perturbation method
+
+--- Context around line 714 ---
+and 0.49% increase in Affinity when employing
+the selective masking method. Additionally, the
+mask-filling method yields affinity improvements
+of 3.38% and 1.32% for RoBERTa and PECOLA
+models, respectively. These results illustrate that
+the Selective Multi-Strategy Perturbation method
+effectively preserves more distinguishable features
+
+--- Context around line 716 ---
+mask-filling method yields affinity improvements
+of 3.38% and 1.32% for RoBERTa and PECOLA
+models, respectively. These results illustrate that
+the Selective Multi-Strategy Perturbation method
+effectively preserves more distinguishable features
+between MGTs and HWTs.
+Model RoBERTa P ECOLA
+
+--- Context around line 717 ---
+of 3.38% and 1.32% for RoBERTa and PECOLA
+models, respectively. These results illustrate that
+the Selective Multi-Strategy Perturbation method
+effectively preserves more distinguishable features
+between MGTs and HWTs.
+Model RoBERTa P ECOLA
+Random Mask DetectGPT -2.64 -1.64
+
+--- Context around line 720 ---
+effectively preserves more distinguishable features
+between MGTs and HWTs.
+Model RoBERTa P ECOLA
+Random Mask DetectGPT -2.64 -1.64
+Selective Mask PECOLA -0.72 -1.15
+Mask-Filling DetectGPT -4.72 -2.66
+Mask-Filling PECOLA -1.34 -1.34
+
+--- Context around line 731 ---
+utilizing metrics Dist-1 and Dist-2 (Celikyilmaz
+et al., 2020). Here, we use three common per-
+turbation methods to demonstrate the importance
+of not arbitrarily changing important tokens and
+the significance of select masks. (1) Token Sub-
+stitution (TS, Zhang et al. 2015), replaces tokens
+with synonyms from WordNet (Miller, 1992); (2)
+
+--- Context around line 739 ---
+ples and randomly substitutes from the vocabu-
+lary of test samples; and (3) Two-stage (TWs, Wei
+et al. 2021) trains the mask-filling model on the
+original data.
+The ideal perturbation result is to have high
+Affinity scores while ensuring high Diversity scores
+(Celikyilmaz et al., 2020). As shown in Table 5,
+
+--- Context around line 744 ---
+Affinity scores while ensuring high Diversity scores
+(Celikyilmaz et al., 2020). As shown in Table 5,
+through Selective Strategy Perturbation, models
+achieve better diversity with high distribution shifts.
+And the overall improvement in Affinity by over
+18% also shows greater diversity than the original
+data. The above results demonstrate the superiority
+
+--- Context around line 749 ---
+18% also shows greater diversity than the original
+data. The above results demonstrate the superiority
+of our perturbation method.
+Method Affinity Dist-1 Dist-2
+TS -20.00 3.38 43.43
+TO -22.06 6.81 53.61
+TWs -21.13 3.24 41.85
+
+--- Context around line 750 ---
+data. The above results demonstrate the superiority
+of our perturbation method.
+Method Affinity Dist-1 Dist-2
+TS -20.00 3.38 43.43
+TO -22.06 6.81 53.61
+TWs -21.13 3.24 41.85
+Original - 8.70 50.32
+
+--- Context around line 759 ---
+4.5.2 Analysis on Selective Strategies
+In this section, we compare various strategies
+for selection in PECOLA . Beyond the PECOLA ’simportance-based perturbation method and random
+perturbation method (DetectGPT), we experiment
+with two other perturbation strategies: rank-based
+perturbation and keyword-based perturbation. In
+rank-based perturbation, we use the rescaled rank
+
+--- Context around line 760 ---
+In this section, we compare various strategies
+for selection in PECOLA . Beyond the PECOLA ’simportance-based perturbation method and random
+perturbation method (DetectGPT), we experiment
+with two other perturbation strategies: rank-based
+perturbation and keyword-based perturbation. In
+rank-based perturbation, we use the rescaled rank
+of next-token probability on GPT2-medium as
+
+--- Context around line 767 ---
+the weight for perturbation position selection. In
+keyword-based perturbation, we prevent changes in
+the keywords extracted by the VLT-5 model (P˛ ezik
+et al., 2022) during perturbation. As shown in Ta-
+ble 6, the experimental results of selective perturba-
+tion outperform the random perturbation method by
+1.20%, 2.04%, and 2.49% in average accuracy on
+
+--- Context around line 770 ---
+et al., 2022) during perturbation. As shown in Ta-
+ble 6, the experimental results of selective perturba-
+tion outperform the random perturbation method by
+1.20%, 2.04%, and 2.49% in average accuracy on
+the 64-example GPT2 dataset. And the importance-
+based strategy is the highest.
+Method Random Prob. Rank Keyword Importance
+
+--- Context around line 774 ---
+the 64-example GPT2 dataset. And the importance-
+based strategy is the highest.
+Method Random Prob. Rank Keyword Importance
+Yake 76.05 1.83 77.35 0.73 78.55 1.65 78.92 1.14
+Perplexity 75.53 1.14 76.63 1.03 77.11 1.80 77.63 1.30
+Table 6: Different strategies for perturbation and token-
+level weighting, namely Random (DetectGPT), Prob.
+
+--- Context around line 789 ---
+portance performs the best, decreasing the failure
+ratio by 3.64% than random.
+Method Random Prob. Rank Keyword Importance
+Ratio (%) 9.20 7.83 7.80 5.56
+Table 7: Mask-filling failure ratio of different perturba-
+tion strategies.
+4.5.3 Generalization on Mask-Filling Models
+
+--- Context around line 793 ---
+Table 7: Mask-filling failure ratio of different perturba-
+tion strategies.
+4.5.3 Generalization on Mask-Filling Models
+We study the influence of various mask-filling mod-
+els on the performance of PECOLA , including Bert
+(110M; Devlin et al. 2019), Bart (139M; Mike
+et al. 2020), GPT-2 (380M; Radford et al. 2019),
+
+--- Context around line 802 ---
+et al. 2019), RoBERTa (125M; Liu et al. 2019), and
+LLaMA-2 (7B; Touvron et al. 2023). As depicted
+in Fig. 3, the results of all mask-filling models sur-
+pass the baseline in terms of accuracy. Furthermore,
+the fluctuation of PECOLA ’s performance across
+different mask-filling models is relatively slight. It
+confirms that PECOLA is not reliant on a specific
+
+--- Context around line 805 ---
+pass the baseline in terms of accuracy. Furthermore,
+the fluctuation of PECOLA ’s performance across
+different mask-filling models is relatively slight. It
+confirms that PECOLA is not reliant on a specific
+filling model, showing great generalization capa-
+bility. The remaining full experimental results of
+different mask-filling models are in Appendix C.2.
+
+--- Context around line 807 ---
+different mask-filling models is relatively slight. It
+confirms that PECOLA is not reliant on a specific
+filling model, showing great generalization capa-
+bility. The remaining full experimental results of
+different mask-filling models are in Appendix C.2.
+/uni00000025/uni00000024/uni00000035/uni00000037 /uni00000025/uni00000028/uni00000035/uni00000037 /uni0000002a/uni00000033/uni00000037/uni00000015
+/uni00000037/uni0000005a/uni0000004b/uni0000004c/uni00000051/uni00000010/uni00000025/uni00000048/uni00000055/uni00000057/uni0000003b/uni0000002f/uni00000030
+
+--- Context around line 809 ---
+filling model, showing great generalization capa-
+bility. The remaining full experimental results of
+different mask-filling models are in Appendix C.2.
+/uni00000025/uni00000024/uni00000035/uni00000037 /uni00000025/uni00000028/uni00000035/uni00000037 /uni0000002a/uni00000033/uni00000037/uni00000015
+/uni00000037/uni0000005a/uni0000004b/uni0000004c/uni00000051/uni00000010/uni00000025/uni00000048/uni00000055/uni00000057/uni0000003b/uni0000002f/uni00000030
+/uni0000002f/uni0000002f/uni00000044/uni00000030/uni00000044/uni00000010/uni00000015 /uni00000035/uni00000052/uni00000045/uni00000048/uni00000055/uni00000057/uni00000044/uni00000037/uni00000018/uni00000017/uni00000013/uni00000018/uni00000013/uni00000019/uni00000013/uni0000001a/uni00000013/uni0000001b/uni00000013/uni0000001c/uni00000013/uni00000014/uni00000013/uni00000013/uni00000014/uni00000014/uni00000013/uni00000024/uni00000046/uni00000046/uni00000058/uni00000055/uni00000044/uni00000046/uni0000005c/uni0000000b/uni00000008/uni0000000c/uni00000018/uni0000001c/uni00000011/uni00000019/uni0000001b/uni00000018/uni0000001a/uni00000011/uni00000017/uni00000013/uni00000018/uni0000001b/uni00000011/uni00000019/uni00000016 /uni00000018/uni0000001a/uni00000011/uni0000001a/uni00000019/uni00000018/uni0000001c/uni00000011/uni00000014/uni00000015 /uni00000018/uni0000001b/uni00000011/uni0000001b/uni0000001c /uni00000018/uni0000001c/uni00000011/uni00000019/uni0000001c/uni00000019/uni00000013/uni00000011/uni0000001c/uni00000017/uni0000002a/uni00000055/uni00000052/uni00000059/uni00000048/uni00000055
+/uni00000025/uni00000024/uni00000035/uni00000037 /uni00000025/uni00000028/uni00000035/uni00000037 /uni0000002a/uni00000033/uni00000037/uni00000015
+
+--- Context around line 826 ---
+/uni0000002b/uni00000026/uni00000016
+Figure 3: Result of generalizing on various mask-filling
+models.
+4.5.4 Generalization on Data
+Cross-domain. We evaluate PECOLA on the
+HC3 dataset crossing three QA domains, namely
+Medicine, Finance, and Computer Science. The
+
+--- Context around line 836 ---
+mains of data as testing data. The results in Table 8
+show that PECOLA is more effective than the best
+baseline and SOTA method on average. For exam-
+ple, compared to Roberta, PECOLA outperforms by
+4.61% in three domains on average. And PECOLA
+maintains a 1.63% higher accuracy on average than
+SOTA DetectGPT.
+
+--- Context around line 881 ---
+5 Conclusion
+In this paper, we introduce PECOLA , a novel
+machine-generated text detection method that ef-
+fectively bridges and integrates metric-based and
+fine-tuned detectors for MGT detection. To re-
+lieve the information loss caused by the random
+masking used in DetectGPT, we present a token-
+
+--- Context around line 886 ---
+lieve the information loss caused by the random
+masking used in DetectGPT, we present a token-
+level selective strategy perturbation method. To bet-
+ter distinguish meaningful recombination spaces
+and reduce reliance on the mask-filling models, we
+present a token-level weighted multi-pairwise con-
+trastive learning method. In few-shot settings, ex-
+
+--- Context around line 888 ---
+level selective strategy perturbation method. To bet-
+ter distinguish meaningful recombination spaces
+and reduce reliance on the mask-filling models, we
+present a token-level weighted multi-pairwise con-
+trastive learning method. In few-shot settings, ex-
+perimental results show that PECOLA significantly
+enhances the performance of PLMs in MGT de-
+
+--- Context around line 890 ---
+and reduce reliance on the mask-filling models, we
+present a token-level weighted multi-pairwise con-
+trastive learning method. In few-shot settings, ex-
+perimental results show that PECOLA significantly
+enhances the performance of PLMs in MGT de-
+tection. Subsequent analytical experiments vali-
+date PECOLA ’s effectiveness, robustness, general-
+
+--- Context around line 912 ---
+Limitations
+In this work, we focus on MGT detection in few-
+shot learning settings. The next phase will involve
+a more comprehensive performance comparison
+based on full datasets. Secondly, our method men-
+tions the score threshold, if the threshold is too
+high or too low, it will not serve the purpose of
+
+--- Context around line 914 ---
+shot learning settings. The next phase will involve
+a more comprehensive performance comparison
+based on full datasets. Secondly, our method men-
+tions the score threshold, if the threshold is too
+high or too low, it will not serve the purpose of
+perturbation. How to automate and flexibly design
+a strict threshold is also a direction for our next
+
+--- Context around line 920 ---
+a strict threshold is also a direction for our next
+phase of improvement. Thirdly, for short texts, our
+perturbation method faces similar limitations, as it
+is difficult to extract the most relevant keywords.
+Thus, perturbation introduces more uncontrollable
+noise, which poses a challenge for us to address
+in the future. Fourth, We hope that the present
+
+--- Context around line 927 ---
+work can inspire future applications in fields like
+machine-generated images and videos, creating a
+universal approach to apply in the direction of ma-
+chine generation.
+Ethics Statement
+PECOLA aims to help users use our method to more
+reasonably and accurately identify MGT. Our goal
+
+--- Context around line 930 ---
+chine generation.
+Ethics Statement
+PECOLA aims to help users use our method to more
+reasonably and accurately identify MGT. Our goal
+is to develop a universal method applicable to other
+fields such as images and audio, and inspire the
+advancement of the stronger detector of MGTs and
+
+--- Context around line 932 ---
+PECOLA aims to help users use our method to more
+reasonably and accurately identify MGT. Our goal
+is to develop a universal method applicable to other
+fields such as images and audio, and inspire the
+advancement of the stronger detector of MGTs and
+prevent all potential negative uses of language mod-
+els. We do not wish our work to be maliciously
+
+--- Context around line 943 ---
+Chaudhary Vishrav, Wenzek Guillaume, Guzmán
+Francisco, Grave Edouard, Ott Myle, ZettlemoyerLuke, and Stoyanov Veselin. 2020. Unsupervised
+cross-lingual representation learning at scale. In An-
+nual Meeting of the Association for Computational
+Linguistics , pages 8440–8451.
+Guangsheng Bao, Yanbin Zhao, Zhiyang Teng, Linyi
+Yang, and Yue Zhang. 2024. Fast-detectGPT: Effi-
+
+--- Context around line 950 ---
+cient zero-shot detection of machine-generated text
+via conditional probability curvature. In The Twelfth
+International Conference on Learning Representa-
+tions .
+Stella Biderman, Hailey Schoelkopf, Quentin Anthony,
+Herbie Bradley, Kyle O’Brien, Eric Hallahan, Mo-
+hammad Aflah Khan, Shivanshu Purohit, USVSN Sai
+
+--- Context around line 957 ---
+Prashanth, Edward Raff, Aviya Skowron, Lintang
+Sutawika, and Oskar van der Wal. 2023. Pythia:
+A suite for analyzing large language models across
+training and scaling. In International Conference on
+Machine Learning .
+Sid Black, Stella Biderman, Eric Hallahan, Quentin
+Anthony, Leo Gao, Laurence Golding, Horace He,
+
+--- Context around line 959 ---
+A suite for analyzing large language models across
+training and scaling. In International Conference on
+Machine Learning .
+Sid Black, Stella Biderman, Eric Hallahan, Quentin
+Anthony, Leo Gao, Laurence Golding, Horace He,
+Connor Leahy, Kyle McDonell, Jason Phang, et al.
+2022. Gpt-neox-20b: An open-source autoregressive
+
+--- Context around line 964 ---
+Connor Leahy, Kyle McDonell, Jason Phang, et al.
+2022. Gpt-neox-20b: An open-source autoregressive
+language model. arXiv preprint arXiv:2204.06745 .
+Ricardo Campos, Vítor Mangaravite, Arian Pasquali,
+Alípio Jorge, Célia Nunes, and Adam Jatowt. 2020.
+Yake! keyword extraction from single documents
+using multiple local features. Information Sciences ,
+
+--- Context around line 989 ---
+Yingtong Dou, Guixiang Ma, Philip S Yu, and Sihong
+Xie. 2020. Robust spammer detection by nash rein-
+forcement learning. In Proceedings of the 26th ACM
+SIGKDD international conference on knowledge dis-
+covery & data mining , pages 924–933.
+Ethan Fetaya, Joern-Henrik Jacobsen, Will Grathwohl,
+and Richard Zemel. 2020. Understanding the limi-
+
+--- Context around line 994 ---
+Ethan Fetaya, Joern-Henrik Jacobsen, Will Grathwohl,
+and Richard Zemel. 2020. Understanding the limi-
+tations of conditional generative models. In Interna-
+tional Conference on Learning Representations .
+Jun Gao, Changlong Yu, Wei Wang, Huan Zhao, and
+Ruifeng Xu. 2022. Mask-then-fill: A flexible and
+effective data augmentation framework for event ex-
+
+--- Context around line 995 ---
+and Richard Zemel. 2020. Understanding the limi-
+tations of conditional generative models. In Interna-
+tional Conference on Learning Representations .
+Jun Gao, Changlong Yu, Wei Wang, Huan Zhao, and
+Ruifeng Xu. 2022. Mask-then-fill: A flexible and
+effective data augmentation framework for event ex-
+traction. In Conference on Empirical Methods in
+
+--- Context around line 998 ---
+Jun Gao, Changlong Yu, Wei Wang, Huan Zhao, and
+Ruifeng Xu. 2022. Mask-then-fill: A flexible and
+effective data augmentation framework for event ex-
+traction. In Conference on Empirical Methods in
+Natural Language Processing .
+Sebastian Gehrmann, Hendrik Strobelt, and Alexan-
+der M Rush. 2019. Gltr: Statistical detection and
+
+--- Context around line 999 ---
+Ruifeng Xu. 2022. Mask-then-fill: A flexible and
+effective data augmentation framework for event ex-
+traction. In Conference on Empirical Methods in
+Natural Language Processing .
+Sebastian Gehrmann, Hendrik Strobelt, and Alexan-
+der M Rush. 2019. Gltr: Statistical detection and
+visualization of generated text. In Proceedings of the
+
+--- Context around line 1008 ---
+111–116.
+Beliz Gunel, Jingfei Du, Alexis Conneau, and Ves Stoy-
+anov. 2021. Supervised contrastive learning for pre-
+trained language model fine-tuning. In International
+Conference on Learning Representations .
+Biyang Guo, Xin Zhang, Ziyuan Wang, Minqi Jiang,
+Jinran Nie, Yuxuan Ding, Jianwei Yue, and Yupeng
+
+--- Context around line 1009 ---
+Beliz Gunel, Jingfei Du, Alexis Conneau, and Ves Stoy-
+anov. 2021. Supervised contrastive learning for pre-
+trained language model fine-tuning. In International
+Conference on Learning Representations .
+Biyang Guo, Xin Zhang, Ziyuan Wang, Minqi Jiang,
+Jinran Nie, Yuxuan Ding, Jianwei Yue, and Yupeng
+Wu. 2023. How close is chatgpt to human experts?
+
+--- Context around line 1010 ---
+anov. 2021. Supervised contrastive learning for pre-
+trained language model fine-tuning. In International
+Conference on Learning Representations .
+Biyang Guo, Xin Zhang, Ziyuan Wang, Minqi Jiang,
+Jinran Nie, Yuxuan Ding, Jianwei Yue, and Yupeng
+Wu. 2023. How close is chatgpt to human experts?
+comparison corpus, evaluation, and detection. arXiv
+
+--- Context around line 1027 ---
+John Kirchenbauer, Jonas Geiping, Yuxin Wen,
+Jonathan Katz, Ian Miers, and Tom Goldstein. 2023.
+A watermark for large language models. arXiv
+preprint arXiv:2301.10226 .
+Robert Kirk, Ishita Mediratta, Christoforos Nalmpantis,
+Jelena Luketina, Eric Hambro, Edward Grefenstette,
+and Roberta Raileanu. 2023. Understanding the ef-
+
+--- Context around line 1037 ---
+Pu, Yu Lan, and Chao Shen. 2023. Coco: Coherence-
+enhanced machine-generated text detection under low
+resource with contrastive learning. In Proceedings
+of the 2023 Conference on Empirical Methods in
+Natural Language Processing , pages 16167–16188.
+Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Man-
+dar Joshi, Danqi Chen, Omer Levy, Mike Lewis,
+
+--- Context around line 1038 ---
+enhanced machine-generated text detection under low
+resource with contrastive learning. In Proceedings
+of the 2023 Conference on Empirical Methods in
+Natural Language Processing , pages 16167–16188.
+Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Man-
+dar Joshi, Danqi Chen, Omer Levy, Mike Lewis,
+Luke Zettlemoyer, and Veselin Stoyanov. 2019.
+
+--- Context around line 1055 ---
+Yang. 2024. Raidar: generative AI detection via
+rewriting. In The Twelfth International Conference
+on Learning Representations .
+Lewis Mike, Liu Yinhan, Goyal Naman, Ghazvinine-
+jad Marjan, Mohamed Abdelrahman, Levy Omer,
+Stoyanov Ves, and Zettlemoyer Luke. 2020. Bart:
+Denoising sequence-to-sequence pre-training for nat-
+
+--- Context around line 1069 ---
+Fatemehsadat Mireshghallah, Justus Mattern, Sicun
+Gao, Reza Shokri, and Taylor Berg-Kirkpatrick.
+2023. Smaller language models are better black-
+box machine-generated text detectors. arXiv preprint
+arXiv:2305.09859 .
+Eric Mitchell, Yoonho Lee, Alexander Khazatsky,
+Christopher D. Manning, and Chelsea Finn. 2023.
+
+--- Context around line 1085 ---
+Alec Radford, Jeffrey Wu, Rewon Child, David Luan,
+Dario Amodei, Ilya Sutskever, et al. 2019. Language
+models are unsupervised multitask learners. OpenAI
+blog, 1:9.
+Colin Raffel, Noam Shazeer, Adam Roberts, Katherine
+Lee, Sharan Narang, Michael Matena, Yanqi Zhou,
+Wei Li, and Peter J Liu. 2020. Exploring the limits
+
+--- Context around line 1090 ---
+Lee, Sharan Narang, Michael Matena, Yanqi Zhou,
+Wei Li, and Peter J Liu. 2020. Exploring the limits
+of transfer learning with a unified text-to-text trans-
+former. The Journal of Machine Learning Research ,
+21:5485–5551.
+Yuhui Shi, Qiang Sheng, Juan Cao, Hao Mi, Beizhe
+Hu, and Danding Wang. 2024. Ten words only still
+
+--- Context around line 1091 ---
+Wei Li, and Peter J Liu. 2020. Exploring the limits
+of transfer learning with a unified text-to-text trans-
+former. The Journal of Machine Learning Research ,
+21:5485–5551.
+Yuhui Shi, Qiang Sheng, Juan Cao, Hao Mi, Beizhe
+Hu, and Danding Wang. 2024. Ten words only still
+help: Improving black-box ai-generated text detec-
+
+--- Context around line 1110 ---
+Jihoon Tack, Sangwoo Mo, Jongheon Jeong, and Jin-
+woo Shin. 2020. Csi: Novelty detection via con-
+trastive learning on distributionally shifted instances.
+Advances in neural information processing systems ,
+33:11839–11852.
+Hugo Touvron, Louis Martin, Kevin Stone, Peter Al-
+bert, Amjad Almahairi, Yasmine Babaei, Nikolay
+
+--- Context around line 1117 ---
+Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti
+Bhosale, et al. 2023. Llama 2: Open founda-
+tion and fine-tuned chat models. arXiv preprint
+arXiv:2307.09288 .
+Christoforos Vasilatos, Manaar Alam, Talal Rahwan,
+Yasir Zaki, and Michail Maniatakos. 2023. Howkgpt:
+Investigating the detection of chatgpt-generated uni-
+
+--- Context around line 1129 ---
+arXiv:2310.06202 .
+Rakesh Verma and Daniel Lee. 2017. Extractive summa-
+rization: Limits, compression, generalized model and
+heuristics. Computación y Sistemas , 21:787–798.
+Vivek Verma, Eve Fleisig, Nicholas Tomlin, and Dan
+Klein. 2023. Ghostbuster: Detecting text ghost-
+written by large language models. arXiv preprint
+
+--- Context around line 1133 ---
+Vivek Verma, Eve Fleisig, Nicholas Tomlin, and Dan
+Klein. 2023. Ghostbuster: Detecting text ghost-
+written by large language models. arXiv preprint
+arXiv:2305.15047 .
+Jan Philip Wahle, Terry Ruas, Frederic Kirstein, and
+Bela Gipp. 2022. How large language models are
+transforming machine-paraphrase plagiarism. In
+
+--- Context around line 1136 ---
+arXiv:2305.15047 .
+Jan Philip Wahle, Terry Ruas, Frederic Kirstein, and
+Bela Gipp. 2022. How large language models are
+transforming machine-paraphrase plagiarism. In
+Conference on Empirical Methods in Natural Lan-
+guage Processing , page 952–963.
+Ben Wang. 2021. Mesh-Transformer-JAX: Model-
+
+--- Context around line 1138 ---
+Bela Gipp. 2022. How large language models are
+transforming machine-paraphrase plagiarism. In
+Conference on Empirical Methods in Natural Lan-
+guage Processing , page 952–963.
+Ben Wang. 2021. Mesh-Transformer-JAX: Model-
+Parallel Implementation of Transformer Lan-
+guage Model with JAX. https://github.com/
+
+--- Context around line 1140 ---
+Conference on Empirical Methods in Natural Lan-
+guage Processing , page 952–963.
+Ben Wang. 2021. Mesh-Transformer-JAX: Model-
+Parallel Implementation of Transformer Lan-
+guage Model with JAX. https://github.com/
+kingoflolz/mesh-transformer-jax .
+Pengyu Wang, Linyang Li, Ke Ren, Botian Jiang, Dong
+
+--- Context around line 1142 ---
+Ben Wang. 2021. Mesh-Transformer-JAX: Model-
+Parallel Implementation of Transformer Lan-
+guage Model with JAX. https://github.com/
+kingoflolz/mesh-transformer-jax .
+Pengyu Wang, Linyang Li, Ke Ren, Botian Jiang, Dong
+Zhang, and Xipeng Qiu. 2023. SeqXGPT: Sentence-
+level AI-generated text detection. In The 2023 Con-
+
+--- Context around line 1147 ---
+Zhang, and Xipeng Qiu. 2023. SeqXGPT: Sentence-
+level AI-generated text detection. In The 2023 Con-
+ference on Empirical Methods in Natural Language
+Processing .
+Sheng Wang, Jinjiao Lian, Yuzhong Peng, Baoqing Hu,
+and Hongsong Chen. 2019. Generalized reference
+evapotranspiration models with limited climatic data
+
+--- Context around line 1151 ---
+Sheng Wang, Jinjiao Lian, Yuzhong Peng, Baoqing Hu,
+and Hongsong Chen. 2019. Generalized reference
+evapotranspiration models with limited climatic data
+based on random forest and gene expression pro-
+gramming in guangxi, china. Agricultural Water
+Management , 221:220–230.
+Xinyi Wang, Hieu Pham, Zihang Dai, and Graham Neu-
+
+--- Context around line 1157 ---
+Xinyi Wang, Hieu Pham, Zihang Dai, and Graham Neu-
+big. 2018. Switchout: an efficient data augmentation
+algorithm for neural machine translation. In Proceed-
+ings of the 2018 Conference on Empirical Methods
+in Natural Language Processing , pages 856–861.Yichen Wang, Shangbin Feng, Abe Bohan Hou, Xiao
+Pu, Chao Shen, Xiaoming Liu, Yulia Tsvetkov, and
+Tianxing He. 2024. Stumbling blocks: Stress testing
+
+--- Context around line 1158 ---
+big. 2018. Switchout: an efficient data augmentation
+algorithm for neural machine translation. In Proceed-
+ings of the 2018 Conference on Empirical Methods
+in Natural Language Processing , pages 856–861.Yichen Wang, Shangbin Feng, Abe Bohan Hou, Xiao
+Pu, Chao Shen, Xiaoming Liu, Yulia Tsvetkov, and
+Tianxing He. 2024. Stumbling blocks: Stress testing
+the robustness of machine-generated text detectors
+
+--- Context around line 1167 ---
+Yu Cheng, and Shiqi Xu. 2021. Few-shot text
+classification with triplet networks, data augmen-
+tation, and curriculum learning. arXiv preprint
+arXiv:2103.07552 .
+Jason Wei and Kai Zou. 2019. Eda: Easy data aug-
+mentation techniques for boosting performance on
+text classification tasks. In Conference on Empiri-
+
+--- Context around line 1172 ---
+mentation techniques for boosting performance on
+text classification tasks. In Conference on Empiri-
+cal Methods in Natural Language Processing , pages
+6381–6387.
+Thomas Wolf, Lysandre Debut, Victor Sanh, Julien
+Chaumond, Clement Delangue, Anthony Moi, Pier-
+ric Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz,
+
+--- Context around line 1179 ---
+et al. 2020. Transformers: State-of-the-art natural
+language processing. In Proceedings of the 2020 con-
+ference on empirical methods in natural language
+processing: system demonstrations , pages 38–45.
+Junchao Wu, Shu Yang, Runzhe Zhan, Yulin Yuan,
+Derek F Wong, and Lidia S Chao. 2023a. A sur-
+vey on llm-gernerated text detection: Necessity,
+
+--- Context around line 1184 ---
+Derek F Wong, and Lidia S Chao. 2023a. A sur-
+vey on llm-gernerated text detection: Necessity,
+methods, and future directions. arXiv preprint
+arXiv:2310.14724 .
+Kangxi Wu, Liang Pang, Huawei Shen, Xueqi Cheng,
+and Tat-Seng Chua. 2023b. LLMDet: A third party
+large language models generated text detection tool.
+
+--- Context around line 1188 ---
+Kangxi Wu, Liang Pang, Huawei Shen, Xueqi Cheng,
+and Tat-Seng Chua. 2023b. LLMDet: A third party
+large language models generated text detection tool.
+InThe 2023 Conference on Empirical Methods in
+Natural Language Processing .
+Qizhe Xie, Zihang Dai, Eduard Hovy, Thang Luong, and
+Quoc Le. 2020. Unsupervised data augmentation for
+
+--- Context around line 1189 ---
+and Tat-Seng Chua. 2023b. LLMDet: A third party
+large language models generated text detection tool.
+InThe 2023 Conference on Empirical Methods in
+Natural Language Processing .
+Qizhe Xie, Zihang Dai, Eduard Hovy, Thang Luong, and
+Quoc Le. 2020. Unsupervised data augmentation for
+consistency training. Advances in neural information
+
+--- Context around line 1216 ---
+Park, Brian McWilliams, Jiawei Han, and Ahmed
+El-Kishky. 2023. Twhin-bert: A socially-enriched
+pre-trained language model for multilingual tweet
+representations at twitter. In Proceedings of the 29th
+ACM SIGKDD Conference on Knowledge Discovery
+and Data Mining , pages 5597–5607.
+Wenxuan Zhou, Fangyu Liu, and Muhao Chen. 2021.
+
+--- Context around line 1221 ---
+and Data Mining , pages 5597–5607.
+Wenxuan Zhou, Fangyu Liu, and Muhao Chen. 2021.
+Contrastive out-of-distribution detection for pre-
+trained transformers. In Proceedings of the 2021
+Conference on Empirical Methods in Natural Lan-
+guage Processing , pages 1100–1111.
+A Implementation Details
+
+--- Context around line 1223 ---
+Contrastive out-of-distribution detection for pre-
+trained transformers. In Proceedings of the 2021
+Conference on Empirical Methods in Natural Lan-
+guage Processing , pages 1100–1111.
+A Implementation Details
+This part mentions the hyperparameter settings and
+meta-information of the HC3 dataset.
+
+--- Context around line 1231 ---
+Experiments evaluating competitors and PECOLA
+follow the setting of CoCo (Liu et al., 2023). The
+hyperparameter settings of all the methods in the
+experiment as shown in Table 10. We randomly
+select 10 different seeds for experiments, and report
+average test accuracy and F1-score.
+Parameter Value
+
+--- Context around line 1238 ---
+Training Epochs 30
+Optimizer AdamW
+Learning rate 1e-5
+Weight Decay 0.01
+Batch Size 16
+Mask Gap 2
+Mask Proportion 10%
+
+--- Context around line 1244 ---
+Mask Proportion 10%
+Score threshold 0.4
+Pre-trained model RoBERTa-base
+Table 10: Implementation details of hyperparameters.
+A.2 Dataset Meta Information
+We evaluate PECOLA effectiveness from domains
+and generators on the HC3 dataset, which primarily
+
+--- Context around line 1264 ---
+We evaluate the impact of different perturbation
+ratios and mask gap on accuracy, and perform a
+minor scan in a few-shot learning settings with a
+set of mask proportions {5, 8, 10, 15, 17, 20} and
+mask gap {0, 1, 2, 3, 4, 5}, average the results for
+each combination of parameters. And a mask gap
+of 2 and a perturbation ratio of 10% achieve the
+
+--- Context around line 1284 ---
+Figure 5: Impact of varying the number of perturbations
+and mask gap in PECOLA , we use T5-large (Raffel et al.,
+2020) as the mask-filling model. For each combination,
+we conduct tests on ten randomly select seeds.
+B.2 Score Threshold
+In the main experiment, all datasets use a com-
+mon score threshold of 0.4, and it may not be the
+
+--- Context around line 1293 ---
+words often vary. Therefore, as shown in Fig. 6, we
+discuss the performance changes of four datasets
+with different score threshold in few-shot learning
+settings. An excessively high score threshold re-
+sults in too many most relevant keywords, failing
+to effectively perturb the data, hence not signifi-
+cantly improving accuracy. Similarly, a too low
+
+--- Context around line 1314 ---
+0.1 0.2 0.3 0.4 0.5 0.6
+Score Threshold0.9770.9780.9790.9800.9810.982HC3
+Accuracy & F1Figure 6: Effect of score threshold on model performance. In the GPT3.5 and HC3 datasets (sub-figure 3 and 4),
+accuracy and F1-score coincide.
+C Efficiency of P ECOLA
+C.1 Scalability of Base Models at Different
+Scales
+
+--- Context around line 1317 ---
+accuracy and F1-score coincide.
+C Efficiency of P ECOLA
+C.1 Scalability of Base Models at Different
+Scales
+We adopt Pythia (Biderman et al., 2023) as the
+base model of PECOLA with different scales, i.e.,
+70M, 160M, 410M, 1B, and 1.4B. We train and do
+
+--- Context around line 1320 ---
+Scales
+We adopt Pythia (Biderman et al., 2023) as the
+base model of PECOLA with different scales, i.e.,
+70M, 160M, 410M, 1B, and 1.4B. We train and do
+experiments on one NVIDIA A100 GPU, and the
+performance and time consumption are in Table 12.
+With the increase in model size, both accuracy and
+
+--- Context around line 1324 ---
+experiments on one NVIDIA A100 GPU, and the
+performance and time consumption are in Table 12.
+With the increase in model size, both accuracy and
+F1-score show upward trends, while the time in-
+crease is linear, which is reasonable.
+C.2 Impact of the Chosen Mask-filling Models
+This section shows the full experimental results of
+
+--- Context around line 1327 ---
+F1-score show upward trends, while the time in-
+crease is linear, which is reasonable.
+C.2 Impact of the Chosen Mask-filling Models
+This section shows the full experimental results of
+different mask-filling models, as shown in Table 13,
+the experimental results confirm the same out-
+comes as in the few-shot learning settings, where
+
+--- Context around line 1329 ---
+C.2 Impact of the Chosen Mask-filling Models
+This section shows the full experimental results of
+different mask-filling models, as shown in Table 13,
+the experimental results confirm the same out-
+comes as in the few-shot learning settings, where
+the T5 filling model does not perform the best
+across all datasets. All the above models are ob-
+
+--- Context around line 1331 ---
+different mask-filling models, as shown in Table 13,
+the experimental results confirm the same out-
+comes as in the few-shot learning settings, where
+the T5 filling model does not perform the best
+across all datasets. All the above models are ob-
+tained from huggingface transformers (Wolf et al.,
+2020). And we do not intervene in the temperature
+
+--- Context around line 1332 ---
+the experimental results confirm the same out-
+comes as in the few-shot learning settings, where
+the T5 filling model does not perform the best
+across all datasets. All the above models are ob-
+tained from huggingface transformers (Wolf et al.,
+2020). And we do not intervene in the temperature
+sampling of the mask-filling model, setting it all to
+
+--- Context around line 1333 ---
+comes as in the few-shot learning settings, where
+the T5 filling model does not perform the best
+across all datasets. All the above models are ob-
+tained from huggingface transformers (Wolf et al.,
+2020). And we do not intervene in the temperature
+sampling of the mask-filling model, setting it all to
+1.
+
+--- Context around line 1336 ---
+tained from huggingface transformers (Wolf et al.,
+2020). And we do not intervene in the temperature
+sampling of the mask-filling model, setting it all to
+1.
+C.3 Further Experiments on Full Datasets
+To demonstrate Pecola’s superiority over the whole
+training set, we conduct a more in-depth test, as
+
+--- Context around line 1348 ---
+0.05%, 0.03% and 0.03% respectively, across four
+datasets.
+Model 70M 160M 410M 1B 1.4B
+Acc 58.42 0.70 63.66 0.17 71.07 1.63 72.13 1.63 74.05 1.77
+F1 58.03 0.79 63.54 0.28 70.87 1.92 71.75 2.67 73.85 1.55
+Per epoch 16s 34s 85s 97s 113s
+Single data 2.2ms 7.0ms 13.8ms 14.1ms 16.6ms
+
+--- Context around line 1353 ---
+Per epoch 16s 34s 85s 97s 113s
+Single data 2.2ms 7.0ms 13.8ms 14.1ms 16.6ms
+Table 12: Results of fine-tuning PECOLA with Pythia models of various scales, on the 64-example GPT2 dataset.
+We also demonstrate the training time per epoch and the single data test time.
+Dataset Method Shot BART Bert GPT-2 Twhin Bert XLM XLNet RoBERTa T5GroverAcc128 62.04 2.51 61.55 1.74 62.82 1.24 61.00 2.20 61.82 0.82 60.16 0.43 63.10 1.76 63.60 1.71
+512 72.24 1.54 71.67 1.04 72.62 1.12 72.78 1.14 72.13 0.64 72.72 1.03 73.25 0.84 73.12 0.84
+F1128 57.80 1.28 57.60 1.93 58.55 0.80 56.74 0.48 57.60 0.92 56.62 0.64 58.29 1.12 58.98 1.58
+
+--- Context around line 1355 ---
+Table 12: Results of fine-tuning PECOLA with Pythia models of various scales, on the 64-example GPT2 dataset.
+We also demonstrate the training time per epoch and the single data test time.
+Dataset Method Shot BART Bert GPT-2 Twhin Bert XLM XLNet RoBERTa T5GroverAcc128 62.04 2.51 61.55 1.74 62.82 1.24 61.00 2.20 61.82 0.82 60.16 0.43 63.10 1.76 63.60 1.71
+512 72.24 1.54 71.67 1.04 72.62 1.12 72.78 1.14 72.13 0.64 72.72 1.03 73.25 0.84 73.12 0.84
+F1128 57.80 1.28 57.60 1.93 58.55 0.80 56.74 0.48 57.60 0.92 56.62 0.64 58.29 1.12 58.98 1.58
+512 66.25 2.34 65.56 1.76 66.72 2.00 68.49 1.04 66.38 2.21 67.50 2.61 67.49 1.68 68.24 1.64
+Recall128 58.03 0.99 57.91 2.08 58.72 0.87 57.18 0.86 57.78 1.04 57.00 0.80 58.31 0.99 57.89 1.44
+
+--- Context around line 1376 ---
+Reacall128 98.63 0.18 98.03 0.40 98.59 0.16 98.58 0.22 98.24 0.09 98.35 0.12 98.79 0.32 98.63 0.32
+512 98.82 0.35 98.45 0.21 98.96 0.25 98.83 0.24 98.80 0.38 98.80 0.30 99.02 0.23 99.15 0.11
+Table 13: The full MGT detection performance of different mask-filling models on four datasets. We use the model
+version with the same level model size, i.e. base version for most models.
+Dataset Shot Metric RoBERTa GLTR CE+SCL CE+Margin IT:Clust CoCo DetectGPT Fast-Detect. PECOLA
+Grover 10000Acc 86.13 0.47 60.40 86.57 0.44 86.25 0.81 72.65 3.44 85.23 0.20 61.42 65.49 86.70 0.37
+F1 84.07 0.91 59.82 84.95 0.56 85.10 1.27 63.21 5.02 83.67 0.56 54.28 63.29 86.66 0.33
+
+--- Context around line 1377 ---
+512 98.82 0.35 98.45 0.21 98.96 0.25 98.83 0.24 98.80 0.38 98.80 0.30 99.02 0.23 99.15 0.11
+Table 13: The full MGT detection performance of different mask-filling models on four datasets. We use the model
+version with the same level model size, i.e. base version for most models.
+Dataset Shot Metric RoBERTa GLTR CE+SCL CE+Margin IT:Clust CoCo DetectGPT Fast-Detect. PECOLA
+Grover 10000Acc 86.13 0.47 60.40 86.57 0.44 86.25 0.81 72.65 3.44 85.23 0.20 61.42 65.49 86.70 0.37
+F1 84.07 0.91 59.82 84.95 0.56 85.10 1.27 63.21 5.02 83.67 0.56 54.28 63.29 86.66 0.33
+GPT-2 10000Acc 89.56 1.18 77.55 90.19 0.60 90.30 0.41 81.65 2.14 89.78 0.04 78.74 80.06 91.10 0.09
+
+--- Context around line 1387 ---
+HC3 10000Acc 99.84 0.08 98.39 99.89 0.01 99.86 0.03 98.80 0.67 99.46 0.24 95.13 98.32 99.92 0.01
+F1 99.84 0.08 98.49 99.89 0.01 99.86 0.03 98.80 0.67 99.46 0.24 95.05 98.02 99.92 0.01
+Table 14: Performance comparison of PECOLA to baseline methods on the full datasets. The results are average
+values of 5 runs with different random seeds. Bold shows the best and second-best results within each column.
+
+
