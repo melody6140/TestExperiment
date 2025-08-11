@@ -485,7 +485,7 @@ class StagedTrainingPipeline:
 
             if val_f1 > best_f1:
                 best_f1 = val_f1
-                torch.save(self.model.state_dict(), 'stage1_best_model.pt')
+                torch.save(self.model.state_dict(), 'outputs/stage1_best_model.pt')
 
         logger.info(f'阶段1完成，最佳F1分数: {best_f1:.4f}')
 
@@ -536,7 +536,7 @@ class StagedTrainingPipeline:
 
             if val_f1 > best_f1:
                 best_f1 = val_f1
-                torch.save(self.model.state_dict(), 'stage2_best_model.pt')
+                torch.save(self.model.state_dict(), 'outputs/stage2_best_model.pt')
 
         logger.info(f'阶段2完成，最佳F1分数: {best_f1:.4f}')
 
@@ -591,7 +591,7 @@ class StagedTrainingPipeline:
 
             if val_f1 > best_f1:
                 best_f1 = val_f1
-                torch.save(self.model.state_dict(), 'stage3_best_model.pt')
+                torch.save(self.model.state_dict(), 'outputs/stage3_best_model.pt')
 
         logger.info(f'阶段3完成，最佳F1分数: {best_f1:.4f}')
         return best_f1
@@ -668,24 +668,20 @@ class StagedTrainingPipeline:
         return metrics
 
 
-def prepare_data(data_path='dataset/hateval2019_en_train.csv'):
+def prepare_data(data_dir='dataset/'):
     """准备训练数据"""
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     processor = HateSpeechDataProcessor(tokenizer)
 
-    # 加载数据
-    df = processor.load_data(data_path)
+    # 加载三个数据文件
+    train_df = processor.load_data(f'{data_dir}hateval2019_en_train.csv')
+    val_df = processor.load_data(f'{data_dir}hateval2019_en_dev.csv')
+    test_df = processor.load_data(f'{data_dir}hateval2019_en_test.csv')
 
-    # 数据分割
-    from sklearn.model_selection import train_test_split
-
-    train_texts, temp_texts, train_labels, temp_labels = train_test_split(
-        df['text'].tolist(), df['HS'].tolist(), test_size=0.3, random_state=42
-    )
-
-    val_texts, test_texts, val_labels, test_labels = train_test_split(
-        temp_texts, temp_labels, test_size=0.5, random_state=42
-    )
+    # 提取文本和标签
+    train_texts, train_labels = train_df['text'].tolist(), train_df['HS'].tolist()
+    val_texts, val_labels = val_df['text'].tolist(), val_df['HS'].tolist()
+    test_texts, test_labels = test_df['text'].tolist(), test_df['HS'].tolist()
 
     logger.info(f"训练集大小: {len(train_texts)}")
     logger.info(f"验证集大小: {len(val_texts)}")
@@ -724,7 +720,7 @@ def main():
     )
 
     # 加载最佳模型
-    model.load_state_dict(torch.load('stage3_best_model.pt'))
+    model.load_state_dict(torch.load('outputs/stage3_best_model.pt'))
     trainer.model = model.to(device)
 
     final_metrics = trainer.detailed_evaluate(test_loader)
@@ -734,7 +730,7 @@ def main():
         logger.info(f"{metric}: {value:.4f}")
 
     # 保存最终模型
-    torch.save(model.state_dict(), 'hate_speech_classifier_final.pt')
+    torch.save(model.state_dict(), 'outputs/hate_speech_classifier_final.pt')
     logger.info("模型训练完成，已保存到 hate_speech_classifier_final.pt")
 
 
